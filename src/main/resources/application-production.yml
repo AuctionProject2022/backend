@@ -40,6 +40,16 @@ spring:
   web:
     resources:
       add-mappings: true # url 으로 resources 접근 여부
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${google_client_id}
+            client-secret : ${google_client_secret}
+            scope :
+              - profile
+              - email
 
 property:
   intra:
