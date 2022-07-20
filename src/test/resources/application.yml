@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    kr.toyauction: debug # project logging
+    org:
+      springframework:
+        transaction: debug # spring transaction logging
+        web: debug # spring web logging
+        security: debug # spring security logging
+        orm:
+          jpa: debug # spring orm jpa logging
+      hibernate:
+        SQL: debug # hibernate sql logging
+        type.descriptor.sql: trace # DDL 시 입력된 실제 Value 값을 확인할려면 trace 으로 사용
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  jpa:
+    open-in-view: false # 지연 로딩을 Controller 까지 확장 하는것 을 금지 한다. 자세한 내용은 OSIV 패턴 참고
+    hibernate:
+      ddl-auto: create # DDL AUTO 전략
+    properties:
+      hibernate:
+        format_sql: true # sql query pretty option
+        default_batch_fetch_size: 1000 # fetch join in query
+    show-sql: false # logging 과 중복되므로 해당옵션은 false
+  servlet:
+    multipart:
+      enabled: true # fileEntity upload true
+      max-file-size: 1024MB # single fileEntity max size
+      max-request-size: 1024MB # total fileEntity request max size
+  messages:
+    basename: classpath:/i18n/messages, classpath:/i18n/errors # messages 경로
+  web:
+    resources:
+      add-mappings: true # url 으로 resources 접근 여부
+
+property:
+  intra:
+    aws-s3-host: https://cdn.toyauction.kr/
+    aws-s3-bucket: toy-auction-private
+    aws-s3-access-key-id: access_key_id
+    aws-s3-secret-access-key: secret_access_key
