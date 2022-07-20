@@ -46,8 +46,6 @@ dependencies {
     annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
     annotationProcessor "com.querydsl:querydsl-apt:${jpaVersion}:jpa"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 }
 
 test {
