@@ -28,6 +28,7 @@ public class MemberService {
 
 		Member member = Member.builder()
 				.username(memberPostRequest.getUsername())
+				.password(memberPostRequest.getPassword())
 				.build();
 		member.validation();
 		Member saved = memberRepository.save(member);
