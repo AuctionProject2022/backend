@@ -17,7 +17,7 @@ logging:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://toydb.c38ary0y4f5o.ap-northeast-2.rds.amazonaws.com/toy?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://${db_host}/toy?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: admin
     password: ${db_password}
   jpa:
@@ -54,6 +54,6 @@ spring:
 property:
   intra:
     aws-s3-host: https://cdn.toyauction.kr/
-    aws-s3-bucket: toy-auction-private
+    aws-s3-bucket: toyauction
     aws-s3-access-key-id: ${access_key_id}
     aws-s3-secret-access-key: ${secret_access_key}
