@@ -56,3 +56,8 @@ property:
     aws-s3-bucket: toy-auction-private
     aws-s3-access-key-id: access_key_id
     aws-s3-secret-access-key: secret_access_key
+
+jwt:
+  secret: JwtSecretTestCodeKeyJwtSecretTestCodeKeyJwtSecretTestCodeKeyJwtSecretTestCodeKeyJwtSecretTestCodeKeyJwtSecretTestCodeKey
+  access_token_expiration: 1800000 # 30분
+  refresh_token_expiration: 2592000000 # 한달

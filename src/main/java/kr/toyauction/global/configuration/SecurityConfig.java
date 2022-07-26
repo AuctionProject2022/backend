@@ -2,6 +2,8 @@ package kr.toyauction.global.configuration;
 
 import kr.toyauction.domain.member.handler.OAuth2SuccessHandler;
 import kr.toyauction.domain.member.service.OAuth2MemberService;
+import kr.toyauction.global.token.JwtAuthenticationEntryPoint;
+import kr.toyauction.global.token.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -9,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -17,6 +20,8 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
 
     private final OAuth2MemberService oAuth2MemberService;
     private final OAuth2SuccessHandler successHandler;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtFilter jwtFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -29,9 +34,14 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+
+                .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/**").permitAll()// 모든 url 허용
+                .anyRequest().authenticated()
 
                 .and()
                 .oauth2Login()
@@ -39,5 +49,6 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
                 .userInfoEndpoint()
                 .userService(oAuth2MemberService);
 
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
