@@ -7,10 +7,7 @@ import kr.toyauction.global.property.Regex;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Slf4j
 @Getter
@@ -21,22 +18,32 @@ import javax.persistence.Id;
 public class Member extends BaseEntity implements EntitySupport {
 
     @Id
+    @Column(name = "memberId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String platformId;
+
+    @Column(unique = true,nullable = false)
     private String username;
 
-    private String password;
+    private String picture;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Platform platform;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    private String refreshToken;
 
     @Override
     public void validation() {
         if (username == null || !username.matches(Regex.USERNAME)) {
             log.error("username : {}", username);
-            throw new DomainValidationException();
-        }
-
-        if (password == null || !password.matches(Regex.PASSWORD)) {
-            log.error("password : {}", password);
             throw new DomainValidationException();
         }
     }
@@ -45,7 +52,7 @@ public class Member extends BaseEntity implements EntitySupport {
         this.username = username;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
