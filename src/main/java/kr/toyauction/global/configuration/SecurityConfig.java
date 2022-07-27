@@ -2,6 +2,7 @@ package kr.toyauction.global.configuration;
 
 import kr.toyauction.domain.member.handler.OAuth2SuccessHandler;
 import kr.toyauction.domain.member.service.OAuth2MemberService;
+import kr.toyauction.global.token.JwtAccessDeniedHandler;
 import kr.toyauction.global.token.JwtAuthenticationEntryPoint;
 import kr.toyauction.global.token.JwtFilter;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +17,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig  extends WebSecurityConfigurerAdapter {
 
     private final OAuth2MemberService oAuth2MemberService;
     private final OAuth2SuccessHandler successHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtFilter jwtFilter;
 
     @Override
@@ -36,6 +39,7 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
 
                 .and()
                 .authorizeRequests()
