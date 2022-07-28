@@ -209,7 +209,7 @@
 
 해당 URL 로 요청하면 구글 로그인 페이지로 리디렉션 할 수 있다. 이후 구글 로그인 을 성공하면 서버로부터 Token 을 받을 수 있다.
 
-=== Http request
+=== HTTP request
 
 ```http
 GET /oauth2/authorization/google HTTP/1.1
@@ -219,17 +219,15 @@ Host: api.toyauction.kr
 === Example response
 
 ```http
-HTTP/1.1 200 OK
-Content-Type: application/json
-Content-Length: 174
-
-{
-  "success" : true,
-  "data" : {
-    "accessToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-    "refreshToken" : true
-  }
-}
+HTTP/1.1 302 Found
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+Strict-Transport-Security: max-age=31536000 ; includeSubDomains
+X-Frame-Options: DENY
+Location: https://toyauction.kr/login?accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 ```
 
 
