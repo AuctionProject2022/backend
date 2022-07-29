@@ -20,6 +20,152 @@ public class ProductController {
 
 	private final ProductService productService;
 
+	@GetMapping(value= Url.PRODUCT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public String getProducts(){
+		String result = "{\n" +
+						"  \"success\": \"true\",\n" +
+						"  \"data\": {\n" +
+						"    \"content\": [\n" +
+						"      {\n" +
+						"        \"productId\": 1,\n" +
+						"        \"thumbnailImage\": {\n" +
+						"          \"imageId\": 2,\n" +
+						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"        },\n" +
+						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
+						"        \"maxBidPrice\": 40000,\n" +
+						"        \"rightPrice\": 38000,\n" +
+						"        \"endSaleDateTime\": \"2022-08-07T21:48:55\"\n" +
+						"      },\n" +
+						"      {\n" +
+						"        \"productId\": 2,\n" +
+						"        \"thumbnailImage\": {\n" +
+						"          \"imageId\": 2,\n" +
+						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"        },\n" +
+						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
+						"        \"maxBidPrice\": 40000,\n" +
+						"        \"rightPrice\": 38000,\n" +
+						"        \"endSaleDateTime\": \"2022-08-07T21:48:55\"\n" +
+						"      },\n" +
+						"      {\n" +
+						"        \"productId\": 3,\n" +
+						"        \"thumbnailImage\": {\n" +
+						"          \"imageId\": 2,\n" +
+						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"        },\n" +
+						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
+						"        \"maxBidPrice\": 40000,\n" +
+						"        \"rightPrice\": 38000,\n" +
+						"        \"endSaleDateTime\": \"2022-08-07T21:48:55\"\n" +
+						"      },\n" +
+						"      {\n" +
+						"        \"productId\": 4,\n" +
+						"        \"thumbnailImage\": {\n" +
+						"          \"imageId\": 2,\n" +
+						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"        },\n" +
+						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
+						"        \"maxBidPrice\": 40000,\n" +
+						"        \"rightPrice\": 38000,\n" +
+						"        \"endSaleDateTime\": \"2022-08-07T21:48:55\"\n" +
+						"      },\n" +
+						"      {\n" +
+						"        \"productId\": 5,\n" +
+						"        \"thumbnailImage\": {\n" +
+						"          \"imageId\": 2,\n" +
+						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"        },\n" +
+						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
+						"        \"maxBidPrice\": 40000,\n" +
+						"        \"rightPrice\": 38000,\n" +
+						"        \"endSaleDateTime\": \"2022-08-07T21:48:55\"\n" +
+						"      },\n" +
+						"      {\n" +
+						"        \"productId\": 6,\n" +
+						"        \"thumbnailImage\": {\n" +
+						"          \"imageId\": 2,\n" +
+						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"        },\n" +
+						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
+						"        \"maxBidPrice\": 40000,\n" +
+						"        \"rightPrice\": 38000,\n" +
+						"        \"endSaleDateTime\": \"2022-08-07T21:48:55\"\n" +
+						"      },\n" +
+						"      {\n" +
+						"        \"productId\": 7,\n" +
+						"        \"thumbnailImage\": {\n" +
+						"          \"imageId\": 2,\n" +
+						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"        },\n" +
+						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
+						"        \"maxBidPrice\": 40000,\n" +
+						"        \"rightPrice\": 38000,\n" +
+						"        \"endSaleDateTime\": \"2022-08-07T21:48:55\"\n" +
+						"      },\n" +
+						"      {\n" +
+						"        \"productId\": 8,\n" +
+						"        \"thumbnailImage\": {\n" +
+						"          \"imageId\": 2,\n" +
+						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"        },\n" +
+						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
+						"        \"maxBidPrice\": 40000,\n" +
+						"        \"rightPrice\": 38000,\n" +
+						"        \"endSaleDateTime\": \"2022-08-07T21:48:55\"\n" +
+						"      },\n" +
+						"      {\n" +
+						"        \"productId\": 9,\n" +
+						"        \"thumbnailImage\": {\n" +
+						"          \"imageId\": 2,\n" +
+						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"        },\n" +
+						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
+						"        \"maxBidPrice\": 40000,\n" +
+						"        \"rightPrice\": 38000,\n" +
+						"        \"endSaleDateTime\": \"2022-08-07T21:48:55\"\n" +
+						"      },\n" +
+						"      {\n" +
+						"        \"productId\": 10,\n" +
+						"        \"thumbnailImage\": {\n" +
+						"          \"imageId\": 2,\n" +
+						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"        },\n" +
+						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
+						"        \"maxBidPrice\": 40000,\n" +
+						"        \"rightPrice\": 38000,\n" +
+						"        \"endSaleDateTime\": \"2022-08-07T21:48:55\"\n" +
+						"      }\n" +
+						"    ],\n" +
+						"    \"pageable\": {\n" +
+						"      \"sort\": {\n" +
+						"        \"sorted\": true,\n" +
+						"        \"unsorted\": false,\n" +
+						"        \"empty\": true\n" +
+						"      },\n" +
+						"      \"pageSize\": 10,\n" +
+						"      \"pageNumber\": 1,\n" +
+						"      \"offset\": 0,\n" +
+						"      \"paged\": false,\n" +
+						"      \"unpaged\": false\n" +
+						"    },\n" +
+						"    \"number\": 1,\n" +
+						"    \"sort\": {\n" +
+						"      \"sorted\": true,\n" +
+						"      \"unsorted\": false,\n" +
+						"      \"empty\": true\n" +
+						"    },\n" +
+						"    \"first\": true,\n" +
+						"    \"last\": false,\n" +
+						"    \"numberOfElements\": 10,\n" +
+						"    \"size\": 10,\n" +
+						"    \"empty\": false\n" +
+						"  }\n" +
+						"}";
+
+		return result;
+	}
+
 	@GetMapping(value = Url.PRODUCT + "/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public String getProduct(@PathVariable final Long productId) {
 
