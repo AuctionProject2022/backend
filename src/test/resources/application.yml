@@ -61,3 +61,7 @@ jwt:
   secret: JwtSecretTestCodeKeyJwtSecretTestCodeKeyJwtSecretTestCodeKeyJwtSecretTestCodeKeyJwtSecretTestCodeKeyJwtSecretTestCodeKey
   access_token_expiration: 1800000 # 30분
   refresh_token_expiration: 2592000000 # 한달
+
+social:
+  login:
+    redirect_url : https://toyauction.kr/login?accessToken=
