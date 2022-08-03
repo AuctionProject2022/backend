@@ -1,19 +1,20 @@
 package kr.toyauction.domain.member.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.toyauction.domain.member.dto.SocialResponse;
 import kr.toyauction.domain.member.entity.Member;
 import kr.toyauction.domain.member.entity.Platform;
 import kr.toyauction.domain.member.entity.Role;
 import kr.toyauction.domain.member.repository.MemberRepository;
-import kr.toyauction.global.dto.SuccessResponse;
 import kr.toyauction.global.dto.Token;
 import kr.toyauction.global.token.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +22,20 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
-    private final ObjectMapper mapper = new ObjectMapper();
+
+//    private final ObjectMapper mapper = new ObjectMapper();
+    private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    @Value("${social.login.redirect_url}")
+    private String redirectUrl;
     @Override
     @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -64,9 +72,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .build();
         response.setHeader("Set-Cookie",cookie.toString());
         response.setContentType("application/json;charset=UTF-8");
-        SocialResponse socialResponse = new SocialResponse(token.getAccessToken(),true); // 바디 응답 data
-        SuccessResponse<SocialResponse> successResponse = new SuccessResponse<>(socialResponse);
-        String result = mapper.writeValueAsString(successResponse);
-        response.getWriter().write(result);
+
+        String targetUrl = redirectUrl+token.getAccessToken();
+        redirectStrategy.sendRedirect(request, response, targetUrl);
     }
 }

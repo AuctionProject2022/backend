@@ -59,6 +59,10 @@ property:
     aws-s3-secret-access-key: secret_access_key
 
 jwt:
-  secret: jwt_secret
+  secret: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   access_token_expiration: 1800000 # 30분
   refresh_token_expiration: 2592000000 # 한달
+
+social:
+  login:
+    redirect_url : https://toyauction.kr/login?accessToken=
