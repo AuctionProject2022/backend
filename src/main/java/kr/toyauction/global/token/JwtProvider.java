@@ -43,6 +43,9 @@ public class JwtProvider implements InitializingBean {
     }
 
     public Token createToken(Long memberId, Authentication authentication) {
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
 
         // expiration time
         long now = (new Date()).getTime();
@@ -55,13 +58,13 @@ public class JwtProvider implements InitializingBean {
         return new Token(
                 Jwts.builder()
                         .setSubject(String.valueOf(memberId))
-                        .claim(JwtEnum.AUTHORITY.getDescription(), authentication.getAuthorities())
+                        .claim(JwtEnum.AUTHORITY.getDescription(), authorities)
                         .signWith(key, SignatureAlgorithm.HS512)
                         .setExpiration(accessValidity)
                         .compact(),
                 Jwts.builder()
                         .setSubject(String.valueOf(memberId))
-                        .claim(JwtEnum.AUTHORITY.getDescription(), authentication.getAuthorities())
+                        .claim(JwtEnum.AUTHORITY.getDescription(), authorities)
                         .signWith(key, SignatureAlgorithm.HS512)
                         .setExpiration(refreshValidity)
                         .compact()

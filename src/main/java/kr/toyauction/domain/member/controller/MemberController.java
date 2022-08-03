@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping(Url.MEMBER)
+    @PreAuthorize("hasRole('USER')")
     public SuccessResponse<Page<MemberGetResponse>> getMembers(final Pageable pageable, final MemberGetRequest memberGetRequest) {
         Page<Member> pageMember = memberService.pageMember(pageable, memberGetRequest);
         return SuccessResponseHelper.success(pageMember.map(MemberGetResponse::new));
