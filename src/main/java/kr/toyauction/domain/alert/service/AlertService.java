@@ -20,7 +20,10 @@ public class AlertService {
 
 		Alert alert = Alert.builder()
 				.memberId(alertPostRequest.getMemberId())
-				.message(alertPostRequest.getMessage())
+				.title(alertPostRequest.getTitle())
+				.contents(alertPostRequest.getContents())
+				.code(alertPostRequest.getCode())
+				.url(alertPostRequest.getUrl())
 				.build();
 		alert.validation();
 		return alertRepository.save(alert);

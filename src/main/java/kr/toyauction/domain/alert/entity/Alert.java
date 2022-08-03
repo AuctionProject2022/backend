@@ -7,10 +7,7 @@ import kr.toyauction.global.exception.DomainValidationException;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Slf4j
 @Getter
@@ -21,12 +18,24 @@ import javax.persistence.Id;
 public class Alert extends BaseEntity implements EntitySupport {
 
 	@Id
+	@Column(name = "AlertId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	private Long memberId;
 
-	private String message;
+	@Column(nullable = false)
+	private String title;
+
+	private String contents;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private AlertCode code;
+
+	@Column(nullable = false)
+	private String url;
 
 	@Override
 	public void validation() {
@@ -36,8 +45,13 @@ public class Alert extends BaseEntity implements EntitySupport {
 			throw new DomainValidationException();
 		}
 
-		if (message == null || message.isBlank()) {
-			log.error("message : {}", message);
+		if (title == null || title.isBlank()) {
+			log.error("message : {}", title);
+			throw new DomainValidationException();
+		}
+
+		if (url == null || url.isBlank()) {
+			log.error("message : {}", url);
 			throw new DomainValidationException();
 		}
 	}
