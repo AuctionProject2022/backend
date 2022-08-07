@@ -30,7 +30,7 @@ public class ProductController {
 						"        \"productId\": 1,\n" +
 						"        \"thumbnailImage\": {\n" +
 						"          \"imageId\": 2,\n" +
-						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"          \"imageUrl\": \"https://example.com/IMG00002.png\"\n" +
 						"        },\n" +
 						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
 						"        \"maxBidPrice\": 40000,\n" +
@@ -41,7 +41,7 @@ public class ProductController {
 						"        \"productId\": 2,\n" +
 						"        \"thumbnailImage\": {\n" +
 						"          \"imageId\": 2,\n" +
-						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"          \"imageUrl\": \"https://example.com/IMG00002.png\"\n" +
 						"        },\n" +
 						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
 						"        \"maxBidPrice\": 40000,\n" +
@@ -52,7 +52,7 @@ public class ProductController {
 						"        \"productId\": 3,\n" +
 						"        \"thumbnailImage\": {\n" +
 						"          \"imageId\": 2,\n" +
-						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"          \"imageUrl\": \"https://example.com/IMG00002.png\"\n" +
 						"        },\n" +
 						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
 						"        \"maxBidPrice\": 40000,\n" +
@@ -63,7 +63,7 @@ public class ProductController {
 						"        \"productId\": 4,\n" +
 						"        \"thumbnailImage\": {\n" +
 						"          \"imageId\": 2,\n" +
-						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"          \"imageUrl\": \"https://example.com/IMG00002.png\"\n" +
 						"        },\n" +
 						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
 						"        \"maxBidPrice\": 40000,\n" +
@@ -74,7 +74,7 @@ public class ProductController {
 						"        \"productId\": 5,\n" +
 						"        \"thumbnailImage\": {\n" +
 						"          \"imageId\": 2,\n" +
-						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"          \"imageUrl\": \"https://example.com/IMG00002.png\"\n" +
 						"        },\n" +
 						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
 						"        \"maxBidPrice\": 40000,\n" +
@@ -85,7 +85,7 @@ public class ProductController {
 						"        \"productId\": 6,\n" +
 						"        \"thumbnailImage\": {\n" +
 						"          \"imageId\": 2,\n" +
-						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"          \"imageUrl\": \"https://example.com/IMG00002.png\"\n" +
 						"        },\n" +
 						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
 						"        \"maxBidPrice\": 40000,\n" +
@@ -96,7 +96,7 @@ public class ProductController {
 						"        \"productId\": 7,\n" +
 						"        \"thumbnailImage\": {\n" +
 						"          \"imageId\": 2,\n" +
-						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"          \"imageUrl\": \"https://example.com/IMG00002.png\"\n" +
 						"        },\n" +
 						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
 						"        \"maxBidPrice\": 40000,\n" +
@@ -107,7 +107,7 @@ public class ProductController {
 						"        \"productId\": 8,\n" +
 						"        \"thumbnailImage\": {\n" +
 						"          \"imageId\": 2,\n" +
-						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"          \"imageUrl\": \"https://example.com/IMG00002.png\"\n" +
 						"        },\n" +
 						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
 						"        \"maxBidPrice\": 40000,\n" +
@@ -118,7 +118,7 @@ public class ProductController {
 						"        \"productId\": 9,\n" +
 						"        \"thumbnailImage\": {\n" +
 						"          \"imageId\": 2,\n" +
-						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"          \"imageUrl\": \"https://example.com/IMG00002.png\"\n" +
 						"        },\n" +
 						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
 						"        \"maxBidPrice\": 40000,\n" +
@@ -129,7 +129,7 @@ public class ProductController {
 						"        \"productId\": 10,\n" +
 						"        \"thumbnailImage\": {\n" +
 						"          \"imageId\": 2,\n" +
-						"          \"imagePath\": \"https://example.com/IMG00002.png\"\n" +
+						"          \"imageUrl\": \"https://example.com/IMG00002.png\"\n" +
 						"        },\n" +
 						"        \"productName\": \"Nike Air Zoom Iorem lorem lorem Pegasus 36 Miami\",\n" +
 						"        \"maxBidPrice\": 40000,\n" +
