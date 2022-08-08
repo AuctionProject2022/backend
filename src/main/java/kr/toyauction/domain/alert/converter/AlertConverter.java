@@ -12,7 +12,7 @@ public class AlertConverter {
 	public static AlertPostRequest to(final AlertPublishEvent alertPublishEvent) {
 		return AlertPostRequest.builder()
 				.memberId(alertPublishEvent.getMemberId())
-				.message(alertPublishEvent.getMessage())
+				.contents(alertPublishEvent.getMessage())
 				.build();
 	}
 }

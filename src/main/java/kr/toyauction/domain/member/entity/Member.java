@@ -18,7 +18,6 @@ import javax.persistence.*;
 public class Member extends BaseEntity implements EntitySupport {
 
     @Id
-    @Column(name = "memberId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
