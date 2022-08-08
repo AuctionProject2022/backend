@@ -18,7 +18,6 @@ import javax.persistence.*;
 public class Alert extends BaseEntity implements EntitySupport {
 
 	@Id
-	@Column(name = "AlertId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
