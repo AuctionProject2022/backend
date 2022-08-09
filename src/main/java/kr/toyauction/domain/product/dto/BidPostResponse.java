@@ -11,13 +11,16 @@ import java.time.LocalDateTime;
 @Setter
 public class BidPostResponse extends BaseEntity {
 
-    private Long id;
+    private Long bidId;
+
     private LocalDateTime createDatetime;
+
     private LocalDateTime updateDatetime;
+
     protected boolean enabled;
 
     public BidPostResponse(final Bid bid) {
-        this.id = bid.getId();
+        this.bidId = bid.getId();
         this.createDatetime = bid.getCreateDatetime();
         this.updateDatetime = bid.getUpdateDatetime();
         this.enabled = bid.isEnabled();
