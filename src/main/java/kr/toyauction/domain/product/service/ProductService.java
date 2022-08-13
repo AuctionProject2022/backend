@@ -1,6 +1,7 @@
 package kr.toyauction.domain.product.service;
 
 import kr.toyauction.domain.product.repository.ProductRepository;
+import kr.toyauction.global.exception.DomainNotFoundException;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +48,12 @@ public class ProductService {
         Product saved = productRepository.save(product);
 
         return saved;
+    }
+
+    @Transactional(readOnly = true)
+    public Product getProduct(Long productId) {
+        return this.productRepository.findById(productId)
+                .orElseThrow(() -> new DomainNotFoundException(productId));
     }
 
 }
