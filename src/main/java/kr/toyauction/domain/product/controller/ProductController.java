@@ -1,5 +1,10 @@
 package kr.toyauction.domain.product.controller;
 
+import kr.toyauction.domain.member.dto.MemberGetRequest;
+import kr.toyauction.domain.member.dto.MemberGetResponse;
+import kr.toyauction.domain.member.entity.Member;
+import kr.toyauction.domain.product.dto.ProductGetRequest;
+import kr.toyauction.domain.product.dto.ProductGetResponse;
 import kr.toyauction.domain.product.dto.ProductPostRequest;
 import kr.toyauction.domain.product.dto.ProductPostResponse;
 import kr.toyauction.domain.product.entity.Product;
@@ -9,6 +14,8 @@ import kr.toyauction.global.dto.SuccessResponseHelper;
 import kr.toyauction.global.property.Url;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -180,4 +187,11 @@ public class ProductController {
 
 		return result;
 	}
+
+	@GetMapping(value = Url.PRODUCT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public SuccessResponse<Page<ProductGetResponse>> getProducts(final Pageable pageable, final ProductGetRequest productGetRequest) {
+		Page<ProductGetResponse> pageProduct = productService.pageProduct(pageable, productGetRequest);
+		return SuccessResponseHelper.success(pageProduct);
+	}
+
 }

@@ -1,6 +1,10 @@
 package kr.toyauction.domain.product.service;
 
+import kr.toyauction.domain.product.dto.ProductGetRequest;
+import kr.toyauction.domain.product.dto.ProductGetResponse;
 import kr.toyauction.domain.product.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +51,11 @@ public class ProductService {
         Product saved = productRepository.save(product);
 
         return saved;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProductGetResponse> pageProduct(@NonNull final Pageable pageable, final ProductGetRequest productGetRequest) {
+        return this.productRepository.page(pageable, productGetRequest);
     }
 
 }
