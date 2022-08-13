@@ -44,4 +44,16 @@ public class ImageEntity extends BaseEntity implements EntitySupport {
 			throw new DomainValidationException();
 		}
 	}
+
+	public void updateType(final ImageType imageType, final Long targetId) {
+		if (imageType == null) {
+			log.error("imageType is null");
+			throw new DomainValidationException();
+		}
+
+		if (targetId == null) {
+			log.error("targetId : {}", path);
+			throw new DomainValidationException();
+		}
+	}
 }

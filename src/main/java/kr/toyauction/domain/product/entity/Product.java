@@ -56,7 +56,7 @@ public class Product extends BaseEntity implements EntitySupport {
     private long registerMemberId;
     
     @Enumerated(EnumType.STRING)
-    private ProductSttus productSttus;
+    private ProductStatus productStatus;
 
     @Override
     public void validation() {
