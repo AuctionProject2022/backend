@@ -6,6 +6,7 @@ import kr.toyauction.global.exception.DomainValidationException;
 import kr.toyauction.global.property.Regex;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Duration;
 import java.time.LocalDate;
