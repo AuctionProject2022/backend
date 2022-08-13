@@ -51,7 +51,7 @@ public class ProductQueryRepositoryImpl extends ProductQuerySupport implements P
                         product.endSaleDateTime
                 ))
                 .from(product)
-                .leftJoin(bid).on(product.id.eq(bid.productId))
+                .leftJoin(bid).on(product.id.eq(bid.product.id))
                 .groupBy(
                         product.id,
                         product.productName,

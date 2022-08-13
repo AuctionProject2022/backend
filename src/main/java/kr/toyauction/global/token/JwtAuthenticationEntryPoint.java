@@ -36,7 +36,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         ErrorResponse errorResponse = new ErrorResponse(errorCode.name(),messageSource.getMessage(errorCode.name(), null, LocaleContextHolder.getLocale()));
 
         // 토큰만료 시 코드와 메시지 변경
-        if (exception.equals(JwtEnum.ERROR_EXPIRED_TOKEN.getDescription())){
+        if (exception != null && exception.equals(JwtEnum.ERROR_EXPIRED_TOKEN.getDescription())){
             errorCode = GlobalErrorCode.G0008;
             errorResponse.setCode(errorCode.name());
             errorResponse.setMessage(messageSource.getMessage(errorCode.name(), null, LocaleContextHolder.getLocale()));

@@ -6,10 +6,14 @@ import kr.toyauction.global.exception.DomainValidationException;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import javax.persistence.*;
+
 
 @Slf4j
 @Getter
@@ -23,9 +27,11 @@ public class Bid extends BaseEntity implements EntitySupport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="product_id")
+    private Product product;
 
-    private int bidPrice;
+    private Integer bidPrice;
 
     private Long registerMemberId;
 
@@ -36,6 +42,5 @@ public class Bid extends BaseEntity implements EntitySupport {
             log.error("bidPrice : {}", bidPrice);
             throw new DomainValidationException();
         }
-
     }
 }
