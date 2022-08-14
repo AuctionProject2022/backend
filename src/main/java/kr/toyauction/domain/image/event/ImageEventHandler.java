@@ -1,7 +1,7 @@
 package kr.toyauction.domain.image.event;
 
 import kr.toyauction.domain.image.service.ImageService;
-import kr.toyauction.global.event.ImageRegistryEvent;
+import kr.toyauction.global.event.ImageProductEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class ImageEventHandler {
 	private final ImageService imageService;
 
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-	public void publishEventListener(@Validated final ImageRegistryEvent event) {
+	public void publishEventListener(@Validated final ImageProductEvent event) {
 		imageService.registerTargetId(event.getImageIds(), event.getImageType(), event.getTargetId());
 	}
 }

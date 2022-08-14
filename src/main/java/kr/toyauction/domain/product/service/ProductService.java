@@ -1,14 +1,18 @@
 package kr.toyauction.domain.product.service;
 
-import kr.toyauction.domain.image.entity.ImageType;
+
+import kr.toyauction.domain.product.dto.ProductGetRequest;
+import kr.toyauction.domain.product.dto.ProductGetResponse;
 import kr.toyauction.domain.product.dto.ProductPostRequest;
 import kr.toyauction.domain.product.entity.Product;
 import kr.toyauction.domain.product.entity.ProductStatus;
 import kr.toyauction.domain.product.repository.ProductRepository;
-import kr.toyauction.global.event.ImageRegistryEvent;
+import kr.toyauction.global.event.ImageProductEvent;
 import kr.toyauction.global.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,23 +58,14 @@ public class ProductService {
 
 
 		// PRODUCT_THUMBNAIL
-		applicationEventPublisher.publishEvent(
-				ImageRegistryEvent.builder()
-						.imageIds(Set.of(productPostRequest.getThumbnailImageId()))
-						.imageType(ImageType.PRODUCT_THUMBNAIL)
-						.targetId(saved.getId()));
-
-		// PRODUCT IMAGE
-		if(!productPostRequest.getImageIds().isEmpty()) {
-			applicationEventPublisher.publishEvent(
-					ImageRegistryEvent.builder()
-							.imageIds(productPostRequest.getImageIds())
-							.imageType(ImageType.PRODUCT)
-							.targetId(saved.getId()));
-		}
+		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
+				.thumbnailImageId(productPostRequest.getThumbnailImageId())
+				.imageIds(Set.of(productPostRequest.getThumbnailImageId()))
+				.targetId(saved.getId()));
 
 		return saved;
 	}
+
 
 	@Transactional(readOnly = true)
 	public Product getProduct(Long productId) {
@@ -78,4 +73,8 @@ public class ProductService {
 				.orElseThrow(() -> new DomainNotFoundException(productId));
 	}
 
+	@Transactional(readOnly = true)
+	public Page<ProductGetResponse> pageProduct(@NonNull final Pageable pageable, final ProductGetRequest productGetRequest) {
+		return this.productRepository.page(pageable, productGetRequest);
+	}
 }

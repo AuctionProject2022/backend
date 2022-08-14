@@ -6,7 +6,14 @@ import kr.toyauction.global.exception.DomainValidationException;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import javax.persistence.*;
+
 
 @Slf4j
 @Getter
@@ -35,6 +42,5 @@ public class Bid extends BaseEntity implements EntitySupport {
             log.error("bidPrice : {}", bidPrice);
             throw new DomainValidationException();
         }
-
     }
 }

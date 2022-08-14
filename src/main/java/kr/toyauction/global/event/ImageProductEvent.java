@@ -1,6 +1,5 @@
 package kr.toyauction.global.event;
 
-import kr.toyauction.domain.image.entity.ImageType;
 import lombok.*;
 
 import java.util.Collection;
@@ -11,9 +10,9 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ImageRegistryEvent {
+public class ImageProductEvent {
 
+	private Long thumbnailImageId;
 	private Collection<Long> imageIds;
-	private ImageType imageType;
 	private Long targetId;
 }
