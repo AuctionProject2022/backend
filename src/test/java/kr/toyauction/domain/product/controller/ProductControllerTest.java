@@ -1,30 +1,37 @@
 package kr.toyauction.domain.product.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.toyauction.domain.image.service.ImageService;
 import kr.toyauction.domain.product.dto.ProductPostRequest;
 import kr.toyauction.domain.product.entity.DeliveryOption;
 import kr.toyauction.domain.product.entity.ExchangeType;
 import kr.toyauction.domain.product.entity.ProductCondition;
 import kr.toyauction.domain.product.entity.PurchaseTime;
+import kr.toyauction.global.error.GlobalErrorCode;
 import kr.toyauction.global.property.TestProperty;
 import kr.toyauction.global.property.Url;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -34,16 +41,20 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@ExtendWith({RestDocumentationExtension.class})
+@ExtendWith({RestDocumentationExtension.class, MockitoExtension.class})
 class ProductControllerTest {
 
 	@Autowired
 	private ObjectMapper objectMapper;
 
 	private MockMvc mockMvc;
+
+	@MockBean
+	ImageService imageService;
 
 	@BeforeEach
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
@@ -65,10 +76,13 @@ class ProductControllerTest {
 	@DisplayName("success : 상품을 등록 합니다.")
 	void postProduct() throws Exception {
 
+		Long thumbnailImageId = 66L;
+		List<Long> imageIds = List.of(66L,67L);
+
 		ProductPostRequest request = ProductPostRequest.builder()
 				.productName("NIKE 에어포스")
-				.imageIds(List.of(66L,67L))
-				.thumbnailImageId(66L)
+				.imageIds(imageIds)
+				.thumbnailImageId(thumbnailImageId)
 				.minBidPrice(1000)
 				.rightPrice(100000)
 				.startSaleDateTime(LocalDateTime.now())
@@ -80,6 +94,8 @@ class ProductControllerTest {
 				.productCondition(ProductCondition.CLEAN)
 				.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
 				.build();
+		doNothing().when(imageService).updateProductTarget(any(), any(), any());
+
 
 		mockMvc.perform(post(Url.PRODUCT)
 						.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -114,6 +130,78 @@ class ProductControllerTest {
 						)
 				));
 	}
+
+	@Test
+	@DisplayName("fail : 상품이름을 입력하지 않으면 상품등록을 실패 합니다.")
+	void postProductNotProductName() throws Exception {
+
+		//given
+		ProductPostRequest request = ProductPostRequest.builder()
+				.productName(null)
+				.imageIds(List.of(66L,67L))
+				.thumbnailImageId(66L)
+				.minBidPrice(1000)
+				.rightPrice(100000)
+				.startSaleDateTime(LocalDateTime.now())
+				.endSaleDateTime(LocalDateTime.now().plusDays(7))
+				.unitPrice(1000)
+				.purchaseTime(PurchaseTime.SIX_MONTHS)
+				.deliveryOption(DeliveryOption.DELIVERY)
+				.exchangeType(ExchangeType.IMPOSSIBLE)
+				.productCondition(ProductCondition.CLEAN)
+				.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
+				.build();
+
+
+		// when
+		ResultActions resultActions = mockMvc.perform(post(Url.PRODUCT)
+						.contentType(MediaType.APPLICATION_JSON_VALUE)
+						.content(objectMapper.writeValueAsString(request)))
+				.andDo(print());
+
+
+		// then
+		resultActions.andExpect(status().isBadRequest());
+		resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0001.name()));
+		resultActions.andExpect(jsonPath("errors[0].field").value("productName"));
+	}
+
+	@Test
+	@DisplayName("fail : 썸네일을 입력하지 않으면 상품등록을 실패 합니다.")
+	void postProductNotThumbnail() throws Exception {
+
+		//given
+		ProductPostRequest request = ProductPostRequest.builder()
+				.productName("나이키")
+				.imageIds(List.of(66L,67L))
+				.thumbnailImageId(null)
+				.minBidPrice(1000)
+				.rightPrice(100000)
+				.startSaleDateTime(LocalDateTime.now())
+				.endSaleDateTime(LocalDateTime.now().plusDays(7))
+				.unitPrice(1000)
+				.purchaseTime(PurchaseTime.SIX_MONTHS)
+				.deliveryOption(DeliveryOption.DELIVERY)
+				.exchangeType(ExchangeType.IMPOSSIBLE)
+				.productCondition(ProductCondition.CLEAN)
+				.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
+				.build();
+
+
+		// when
+		ResultActions resultActions = mockMvc.perform(post(Url.PRODUCT)
+						.contentType(MediaType.APPLICATION_JSON_VALUE)
+						.content(objectMapper.writeValueAsString(request)))
+				.andDo(print());
+
+
+		// then
+		resultActions.andExpect(status().isBadRequest());
+		resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0001.name()));
+		resultActions.andExpect(jsonPath("errors[0].field").value("thumbnailImageId"));
+	}
+
+
 
 	@Test
 	@DisplayName("success : 상품을 조회 합니다.")
@@ -161,8 +249,8 @@ class ProductControllerTest {
 								fieldWithPath("data.bids[].bidPrice").description("입찰 금액"),
 								fieldWithPath("data.bids[].bidDateTime").description("입찰 시간"),
 								fieldWithPath("data.registerMemberId").description("등록자 회원번호"),
-								fieldWithPath("data.productSttus.code").description("판매 상태 코드"),
-								fieldWithPath("data.productSttus.name").description("판매 상태 이름"),
+								fieldWithPath("data.productStatus.code").description("판매 상태 코드"),
+								fieldWithPath("data.productStatus.name").description("판매 상태 이름"),
 								fieldWithPath("data.createDatetime").description("등록일"),
 								fieldWithPath("data.updateDatetime").description("수정일")
 						)

@@ -55,5 +55,8 @@ public class ImageEntity extends BaseEntity implements EntitySupport {
 			log.error("targetId : {}", path);
 			throw new DomainValidationException();
 		}
+
+		this.type = imageType;
+		this.targetId = targetId;
 	}
 }

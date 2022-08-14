@@ -4,10 +4,8 @@ import kr.toyauction.domain.image.service.ImageService;
 import kr.toyauction.global.event.ImageProductEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
-import org.springframework.validation.annotation.Validated;
 
 @Slf4j
 @Component
@@ -16,8 +14,9 @@ public class ImageEventHandler {
 
 	private final ImageService imageService;
 
-	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-	public void publishEventListener(@Validated final ImageProductEvent event) {
-		imageService.registerTargetId(event.getImageIds(), event.getImageType(), event.getTargetId());
+	@EventListener
+	public void publishEventListener(final ImageProductEvent event) {
+		System.out.println("asbasd");
+		imageService.updateProductTarget(event.getThumbnailImageId(), event.getImageIds(), event.getTargetId());
 	}
 }

@@ -6,6 +6,7 @@ import kr.toyauction.domain.product.dto.ProductGetResponse;
 import kr.toyauction.domain.product.dto.ProductPostRequest;
 import kr.toyauction.domain.product.entity.Product;
 import kr.toyauction.domain.product.entity.ProductStatus;
+import kr.toyauction.domain.product.repository.ProductQueryRepository;
 import kr.toyauction.domain.product.repository.ProductRepository;
 import kr.toyauction.global.event.ImageProductEvent;
 import kr.toyauction.global.exception.DomainNotFoundException;
@@ -17,17 +18,16 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-
 @Service
 @RequiredArgsConstructor
 public class ProductService {
 
 	private final ProductRepository productRepository;
+	private final ProductQueryRepository productQueryRepository;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 	@Transactional
-	public Product registerProduct(@NonNull final ProductPostRequest productPostRequest) {
+	public Product save(@NonNull final ProductPostRequest productPostRequest) {
 
 		//상품 설명 텍스트 입력시 자바스크립트 삽입 공격 방지
 		productPostRequest.getDetail()
@@ -56,12 +56,12 @@ public class ProductService {
 
 		Product saved = productRepository.save(product);
 
-
 		// PRODUCT_THUMBNAIL
 		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
 				.thumbnailImageId(productPostRequest.getThumbnailImageId())
-				.imageIds(Set.of(productPostRequest.getThumbnailImageId()))
-				.targetId(saved.getId()));
+				.imageIds(productPostRequest.getImageIds())
+				.targetId(saved.getId())
+				.build());
 
 		return saved;
 	}
@@ -75,6 +75,6 @@ public class ProductService {
 
 	@Transactional(readOnly = true)
 	public Page<ProductGetResponse> pageProduct(@NonNull final Pageable pageable, final ProductGetRequest productGetRequest) {
-		return this.productRepository.page(pageable, productGetRequest);
+		return this.productQueryRepository.page(pageable, productGetRequest);
 	}
 }

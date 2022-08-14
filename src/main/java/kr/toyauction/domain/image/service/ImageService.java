@@ -1,13 +1,16 @@
 package kr.toyauction.domain.image.service;
 
+import io.jsonwebtoken.lang.Collections;
 import kr.toyauction.domain.image.dto.ImagePostRequest;
 import kr.toyauction.domain.image.entity.ImageEntity;
 import kr.toyauction.domain.image.entity.ImageType;
 import kr.toyauction.domain.image.repository.ImageRepository;
+import kr.toyauction.global.exception.DomainNotFoundException;
 import kr.toyauction.global.util.CommonUtils;
 import kr.toyauction.infra.aws.client.IntraAwsS3Client;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,16 +42,19 @@ public class ImageService {
 	}
 
 	@Transactional
-	public void registerTargetId(final Collection<Long> imageId,
-								 final ImageType imageType,
-								 final Long targetId) {
+	public void updateProductTarget(@NonNull final Long thumbnailImageId,
+									@NonNull final Collection<Long> imageIds,
+									@NonNull final Long targetId) {
 
-		List<ImageEntity> imageEntities = imageRepository.findAllById(imageId);
+		ImageEntity thumbnail = imageRepository.findById(thumbnailImageId)
+				.orElseThrow(() -> new DomainNotFoundException(thumbnailImageId));
+		thumbnail.updateType(ImageType.PRODUCT_THUMBNAIL, targetId);
 
-		for (ImageEntity imageEntity : imageEntities) {
-			imageEntity.updateType(imageType, targetId);
+		if (!Collections.isEmpty(imageIds)) {
+			List<ImageEntity> imageEntities = imageRepository.findAllById(imageIds);
+			for (ImageEntity imageEntity : imageEntities) {
+				imageEntity.updateType(ImageType.PRODUCT, targetId);
+			}
 		}
-
-		imageRepository.saveAll(imageEntities);
 	}
 }
