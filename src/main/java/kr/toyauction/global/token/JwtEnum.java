@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum JwtEnum {
-    ERROR_EXPIRED_TOKEN("expiredJwt"),
-    EXCEPTION_PRODUCE("exception"),
-    AUTHORITY("authority"),
+    AUTHORITY("권한"),
     HEADER("Authorization"),
+    USER_NAME("닉네임"),
+    ISSUER("toyAuction"),
     BEARER("Bearer ");
 
     private final String description;

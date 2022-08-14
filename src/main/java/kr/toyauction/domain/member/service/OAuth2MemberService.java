@@ -29,7 +29,7 @@ public class OAuth2MemberService implements OAuth2UserService<OAuth2UserRequest,
         SocialRequest attributes = SocialRequest.
                 of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-        return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(Role.USER.getKey()))
+        return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(Role.ROLE_USER.getKey()))
                 ,	attributes.convertToMap()
                 ,	"email");
     }

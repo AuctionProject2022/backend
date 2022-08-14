@@ -37,8 +37,6 @@ public class Member extends BaseEntity implements EntitySupport {
     @Column(nullable = false)
     private Role role;
 
-    private String refreshToken;
-
     @Override
     public void validation() {
         if (username == null || !username.matches(Regex.USERNAME)) {
@@ -49,9 +47,5 @@ public class Member extends BaseEntity implements EntitySupport {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
     }
 }

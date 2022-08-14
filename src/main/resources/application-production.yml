@@ -61,9 +61,8 @@ property:
 
 jwt:
   secret: ${jwt_secret}
-  access_token_expiration: 1800000 # 30분
-  refresh_token_expiration: 2592000000 # 한달
+  token_expiration: 21600000 # 6 시간
 
 social:
   login:
-    redirect_url : https://toyauction.kr/login?accessToken=
+    redirect_url : https://toyauction.kr/login?token=

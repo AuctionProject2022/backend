@@ -1,6 +1,6 @@
 package kr.toyauction.global.token;
 
-import kr.toyauction.global.dto.Token;
+import kr.toyauction.domain.member.entity.Member;
 import kr.toyauction.global.exception.NoAuthorityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +29,8 @@ public class JwtProvider implements InitializingBean {
 
     @Value("${jwt.secret}")
     private String secret;
-    @Value("${jwt.access_token_expiration}")
-    private long accessTokenExpiration;
-    @Value("${jwt.refresh_token_expiration}")
-    private long refreshTokenExpiration;
+    @Value("${jwt.token_expiration}")
+    private long tokenExpiration;
 
     private Key key;
 
@@ -42,33 +40,20 @@ public class JwtProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public Token createToken(Long memberId, Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+    public String createToken(Member member) {
 
         // expiration time
         long now = (new Date()).getTime();
-        long accessValidityinSecond = now + accessTokenExpiration;
-        long refreshValidityinSecond = now + refreshTokenExpiration;
-        Date accessValidity = new Date(accessValidityinSecond);
-        Date refreshValidity = new Date(refreshValidityinSecond);
+        long expiration = now + tokenExpiration;
+        Date expirationDate = new Date(expiration);
 
         // build token
-        return new Token(
-                Jwts.builder()
-                        .setSubject(String.valueOf(memberId))
-                        .claim(JwtEnum.AUTHORITY.getDescription(), authorities)
-                        .signWith(key, SignatureAlgorithm.HS512)
-                        .setExpiration(accessValidity)
-                        .compact(),
-                Jwts.builder()
-                        .setSubject(String.valueOf(memberId))
-                        .claim(JwtEnum.AUTHORITY.getDescription(), authorities)
-                        .signWith(key, SignatureAlgorithm.HS512)
-                        .setExpiration(refreshValidity)
-                        .compact()
-        );
+        return Jwts.builder()
+                   .setSubject(String.valueOf(member.getId()))
+                   .claim(JwtEnum.AUTHORITY.getDescription(), member.getRole())
+                   .signWith(key, SignatureAlgorithm.HS512)
+                   .setExpiration(expirationDate)
+                   .compact();
     }
 
     public Authentication getAuthentication(String token) {
@@ -95,7 +80,6 @@ public class JwtProvider implements InitializingBean {
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             logger.info("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
-            request.setAttribute(JwtEnum.EXCEPTION_PRODUCE.getDescription(), JwtEnum.ERROR_EXPIRED_TOKEN.getDescription());	// 만료된 토큰을 구별하기 위해서
             logger.info("만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
             logger.info("지원되지 않는 JWT 토큰입니다.");

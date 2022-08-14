@@ -11,7 +11,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -22,17 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
-
-//    private final ObjectMapper mapper = new ObjectMapper();
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     @Value("${social.login.redirect_url}")
     private String redirectUrl;
@@ -56,24 +50,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                     .username(username)
                     .picture((String) oAuth2User.getAttributes().get("picture"))
                     .platform(Platform.google)  // 추후 타 플랫폼 추가시 변경 되어야 함
-                    .role(Role.USER)
+                    .role(Role.ROLE_USER)
                     .build();
 
             memberRepository.save(member);  // 신규 멤버 저장
         }
-        Token token = jwtProvider.createToken(member.getId(),authentication); // 토큰 발행
-        member.setRefreshToken(token.getRefreshToken());      // 리프레쉬 토큰값 db에 업데이트
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", token.getRefreshToken()) // 헤더에 전달할 쿠키 설정
-                .maxAge(7 * 24 * 60 * 60)
-                .path("/")
-                .secure(true)
-                .sameSite("None")
-                .httpOnly(true)
-                .build();
-        response.setHeader("Set-Cookie",cookie.toString());
-        response.setContentType("application/json;charset=UTF-8");
+        String token = jwtProvider.createToken(member); // 토큰 발행
 
-        String targetUrl = redirectUrl+token.getAccessToken();
+        String targetUrl = redirectUrl+token;
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }
 }

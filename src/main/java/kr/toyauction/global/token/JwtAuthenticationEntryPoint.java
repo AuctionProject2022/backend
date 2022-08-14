@@ -27,20 +27,11 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         log.error("UnAuthorizaed!!! message : " + authException.getMessage());
-        String exception = (String)request.getAttribute(JwtEnum.EXCEPTION_PRODUCE.getDescription());    //만료된 토큰을 구분하려고 만듬
 
-        // 바디에 내가 원하는 형태의 값의 지정과 만료된 토큰이 아닐 시 잘못된 토큰으로 코드와 메세지 전달
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         GlobalErrorCode errorCode = GlobalErrorCode.G0007;
         ErrorResponse errorResponse = new ErrorResponse(errorCode.name(),messageSource.getMessage(errorCode.name(), null, LocaleContextHolder.getLocale()));
-
-        // 토큰만료 시 코드와 메시지 변경
-        if (exception != null && exception.equals(JwtEnum.ERROR_EXPIRED_TOKEN.getDescription())){
-            errorCode = GlobalErrorCode.G0008;
-            errorResponse.setCode(errorCode.name());
-            errorResponse.setMessage(messageSource.getMessage(errorCode.name(), null, LocaleContextHolder.getLocale()));
-        }
 
         // 바디 전달
         try (OutputStream os = response.getOutputStream()) {

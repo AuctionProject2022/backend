@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e, AuthenticationException authException) {
         log.error("AccessDeniedException : ", e);
-        return errorResponseHelper.code(GlobalErrorCode.G0010);
+        return errorResponseHelper.code(GlobalErrorCode.G0008);
     }
 
     @ExceptionHandler(DomainNotFoundException.class)
