@@ -4,10 +4,12 @@ import lombok.Getter;
 
 @Getter
 public enum JwtEnum {
-    AUTHORITY("권한"),
+    AUTHORITY("authority"),
     HEADER("Authorization"),
-    USER_NAME("닉네임"),
+    USER_NAME("userName"),
     ISSUER("toyAuction"),
+    USER_ID("memberId"),
+    EXPIRATION("expiration"),
     BEARER("Bearer ");
 
     private final String description;

@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,19 +42,25 @@ public class JwtProvider implements InitializingBean {
     }
 
     public String createToken(Member member) {
+        Claims claims = Jwts.claims();
+        claims.put(JwtEnum.USER_ID.getDescription(), member.getId());
+        claims.put(JwtEnum.AUTHORITY.getDescription(),member.getRole());
+        claims.put(JwtEnum.USER_NAME.getDescription(), member.getUsername());
 
         // expiration time
         long now = (new Date()).getTime();
         long expiration = now + tokenExpiration;
         Date expirationDate = new Date(expiration);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String expirationDateString = simpleDateFormat.format(expirationDate);
+        claims.put(JwtEnum.EXPIRATION.getDescription(), expirationDateString);
 
         // build token
         return Jwts.builder()
-                   .setSubject(String.valueOf(member.getId()))
-                   .claim(JwtEnum.AUTHORITY.getDescription(), member.getRole())
-                   .signWith(key, SignatureAlgorithm.HS512)
-                   .setExpiration(expirationDate)
-                   .compact();
+                .setClaims(claims)
+                .setIssuer(JwtEnum.ISSUER.getDescription())
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
     }
 
     public Authentication getAuthentication(String token) {
@@ -68,7 +75,7 @@ public class JwtProvider implements InitializingBean {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        User principal = new User(claims.getSubject(), "", authorities);
+        User principal = new User("USER", "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
