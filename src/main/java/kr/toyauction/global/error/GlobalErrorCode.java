@@ -16,9 +16,7 @@ public enum GlobalErrorCode implements ErrorCode {
     ,G0005(HttpStatus.BAD_REQUEST)
     ,G0006(HttpStatus.BAD_REQUEST)
     ,G0007(HttpStatus.UNAUTHORIZED)
-    ,G0008(HttpStatus.UNAUTHORIZED)
-    ,G0009(HttpStatus.UNAUTHORIZED)
-    ,G0010(HttpStatus.FORBIDDEN)
+    ,G0008(HttpStatus.FORBIDDEN)
     ;
 
     private final HttpStatus status;
