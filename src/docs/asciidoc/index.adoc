@@ -255,11 +255,27 @@ Location: https://toyauction.kr/login?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 |===
 | Parameters | Type | Description
 
-| accessToken
+| token
 | String
-| 엑세스 토큰
+| jwt
 
 |===
+
+=== Example jwt
+
+```HEADER
+{
+  "alg": "HS512"
+}
+PAYLOAD
+{
+  "memberId": 1,
+  "authority": "ROLE_USER",
+  "userName": "LYldMy9o6d",
+  "expiration": "2022-08-15 05:39:17",
+  "iss": "toyAuction"
+}
+```
 
 = 리소스 API
 
