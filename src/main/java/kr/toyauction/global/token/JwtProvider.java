@@ -66,18 +66,16 @@ public class JwtProvider implements InitializingBean {
     public Authentication getAuthentication(String token) {
         Claims claims = parseClaims(token);
 
-        if (claims.get(JwtEnum.AUTHORITY.getDescription()) == null) {
-            throw new NoAuthorityException();
+        try{
+            Collection<? extends GrantedAuthority> authorities =
+                    Arrays.stream(claims.get(JwtEnum.AUTHORITY.getDescription()).toString().split(","))
+                            .map(SimpleGrantedAuthority::new).toList();
+            User principal = new User("USER", "", authorities);
+            return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        }catch (Exception e){
+            logger.info("잘못 된 토큰 입니다.");
+            return null;
         }
-
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(JwtEnum.AUTHORITY.getDescription()).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-        User principal = new User("USER", "", authorities);
-
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
     public boolean validateToken(HttpServletRequest request, String token) {
