@@ -6,7 +6,10 @@ import kr.toyauction.domain.product.entity.ProductCondition;
 import kr.toyauction.domain.product.entity.PurchaseTime;
 import kr.toyauction.global.property.Regex;
 import lombok.*;
+
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,28 +23,40 @@ public class ProductPostRequest {
 
     @NotBlank
     @Pattern(regexp = Regex.PRODUCTNAME, message = "{REGEX_PRODUCT_NAME}")
-    private String productName ;
+    private String productName;
 
     private List<Long> imageIds;
 
+    @NotNull
     private Long thumbnailImageId;
 
-    private int minBidPrice;
+    @NotNull
+    @Min(0)
+    private Integer minBidPrice;
 
-    private int rightPrice;
+    @NotNull
+    @Min(0)
+    private Integer rightPrice;
 
-    LocalDateTime startSaleDateTime;
+    @NotNull
+    private LocalDateTime startSaleDateTime;
 
-    LocalDateTime endSaleDateTime;
+    @NotNull
+    private LocalDateTime endSaleDateTime;
 
-    private int unitPrice;
+    @NotNull
+    private Integer unitPrice;
 
+    @NotNull
     private PurchaseTime purchaseTime;
 
+    @NotNull
     private DeliveryOption deliveryOption;
 
+    @NotNull
     private ExchangeType exchangeType;
 
+    @NotNull
     private ProductCondition productCondition;
 
     @NotBlank

@@ -1,9 +1,6 @@
 package kr.toyauction.domain.product.controller;
 
 
-import kr.toyauction.domain.member.dto.MemberGetRequest;
-import kr.toyauction.domain.member.dto.MemberGetResponse;
-import kr.toyauction.domain.member.entity.Member;
 import kr.toyauction.domain.product.dto.ProductGetRequest;
 import kr.toyauction.domain.product.dto.ProductGetResponse;
 
@@ -102,7 +99,7 @@ public class ProductController {
 				"      }\n" +
 				"    ],\n" +
 				"    \"registerMemberId\": 1,\n" +
-				"    \"productSttus\": {\n" +
+				"    \"productStatus\": {\n" +
 				"      \"code\": \"ST_01\",\n" +
 				"      \"name\": \"판매중\"\n" +
 				"    },\n" +
@@ -125,7 +122,7 @@ public class ProductController {
 
 	@PostMapping(value = Url.PRODUCT , produces = MediaType.APPLICATION_JSON_VALUE)
 	public SuccessResponse<ProductPostResponse> postProduct(@Validated @RequestBody final ProductPostRequest request) {
-		Product product = productService.registerProduct(request);
+		Product product = productService.save(request);
 		return SuccessResponseHelper.success(new ProductPostResponse(product));
 	}
 

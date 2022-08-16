@@ -3,6 +3,7 @@ package kr.toyauction.domain.member.service;
 import kr.toyauction.domain.member.dto.MemberGetRequest;
 import kr.toyauction.domain.member.dto.MemberPostRequest;
 import kr.toyauction.domain.member.entity.Member;
+import kr.toyauction.domain.member.repository.MemberQueryRepository;
 import kr.toyauction.domain.member.repository.MemberRepository;
 import kr.toyauction.global.event.AlertPublishEvent;
 import kr.toyauction.global.exception.DomainNotFoundException;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
 	private final MemberRepository memberRepository;
+	private final MemberQueryRepository memberQueryRepository;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 	@Transactional
@@ -45,6 +47,6 @@ public class MemberService {
 
 	@Transactional(readOnly = true)
 	public Page<Member> pageMember(@NonNull final Pageable pageable, final MemberGetRequest memberGetRequest) {
-		return this.memberRepository.page(pageable, memberGetRequest);
+		return this.memberQueryRepository.page(pageable, memberGetRequest);
 	}
 }
