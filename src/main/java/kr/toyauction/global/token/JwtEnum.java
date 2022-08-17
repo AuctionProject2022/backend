@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum JwtEnum {
     AUTHORITY("authority"),
     HEADER("Authorization"),
-    USER_NAME("userName"),
+    USER_NAME("username"),
     ISSUER("toyAuction"),
     USER_ID("memberId"),
     EXPIRATION("expiration"),
