@@ -5,6 +5,7 @@ import kr.toyauction.global.dto.ErrorResponseHelper;
 import kr.toyauction.global.error.GlobalErrorCode;
 import kr.toyauction.global.exception.BusinessException;
 import kr.toyauction.global.exception.DomainNotFoundException;
+import kr.toyauction.global.exception.WrongValueException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,12 @@ import javax.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
 
     private final ErrorResponseHelper errorResponseHelper;
+
+    @ExceptionHandler(WrongValueException.class)
+    public ResponseEntity<ErrorResponse> handleWrongValueException(WrongValueException e) {
+        log.error("WrongValueException : ", e);
+        return errorResponseHelper.code(GlobalErrorCode.G0003,e.getErrorMessage());
+    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e, AuthenticationException authException) {

@@ -47,4 +47,11 @@ public class MemberService {
 	public Page<Member> pageMember(@NonNull final Pageable pageable, final MemberGetRequest memberGetRequest) {
 		return this.memberRepository.page(pageable, memberGetRequest);
 	}
+
+	@Transactional(readOnly = true)
+	public Member getUsername(String username) {
+		Member member = memberRepository.findByUsername(username);
+		if (member == null) throw new DomainNotFoundException();
+		return member;
+	}
 }
