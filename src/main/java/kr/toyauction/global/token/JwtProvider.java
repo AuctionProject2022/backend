@@ -69,7 +69,8 @@ public class JwtProvider implements InitializingBean {
         try{
             Collection<? extends GrantedAuthority> authorities =
                     Arrays.stream(claims.get(JwtEnum.AUTHORITY.getDescription()).toString().split(","))
-                            .map(SimpleGrantedAuthority::new).toList();
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
             User principal = new User("USER", "", authorities);
             return new UsernamePasswordAuthenticationToken(principal, token, authorities);
         }catch (Exception e){

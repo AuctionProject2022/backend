@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
 @Setter
 public class MemberGetResponse extends BaseEntity {
 
-    private Long id;
+    private Long memberId;
     private String username;
     private LocalDateTime createDatetime;
     private LocalDateTime updateDatetime;
     protected boolean enabled;
 
     public MemberGetResponse(final Member member) {
-        this.id = member.getId();
+        this.memberId = member.getId();
         this.username = member.getUsername();
         this.createDatetime = member.getCreateDatetime();
         this.updateDatetime = member.getUpdateDatetime();
