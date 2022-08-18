@@ -8,6 +8,6 @@ import kr.toyauction.global.error.GlobalErrorCode;
  */
 public class WrongValueException extends BusinessException {
     public WrongValueException(String message) {
-        super(GlobalErrorCode.G0003,message,null);
+        super(GlobalErrorCode.G0003,message);
     }
 }

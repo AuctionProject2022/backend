@@ -3,6 +3,7 @@ package kr.toyauction.domain.member.controller;
 import kr.toyauction.domain.member.dto.MemberGetResponse;
 import kr.toyauction.domain.member.entity.Member;
 import kr.toyauction.domain.member.service.MemberService;
+import kr.toyauction.global.error.GlobalErrorCode;
 import kr.toyauction.global.property.TestProperty;
 import kr.toyauction.global.property.Url;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
@@ -107,5 +109,59 @@ public class MemberControllerTest {
         resultActions.andExpect(jsonPath("data.createDatetime").isNotEmpty());
         resultActions.andExpect(jsonPath("data.updateDatetime").isNotEmpty());
         resultActions.andExpect(jsonPath("data.enabled").isNotEmpty());
+    }
+
+    @Test
+    @DisplayName("username 이 1글자로 들어오는 경우")
+    void getMemberByUsernameMinText() throws Exception{
+        // given
+        String username = "t";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(Url.MEMBER + "/username/{username}", username)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+        resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
+        resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0003.name()));
+    }
+
+    @Test
+    @DisplayName("username 이 11글자로 들어오는 경우")
+    void getMemberByUsernameMaxText() throws Exception{
+        // given
+        String username = "testUsernam";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(Url.MEMBER + "/username/{username}", username)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+        resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
+        resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0003.name()));
+    }
+
+    @Test
+    @DisplayName("username 에 특수문자가 들어오는 경우")
+    void getMemberByUsernameSpecialText() throws Exception{
+        // given
+        String username = "test!";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(Url.MEMBER + "/username/{username}", username)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+        resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
+        resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0003.name()));
     }
 }

@@ -25,4 +25,10 @@ public class BusinessException extends RuntimeException {
 		this.args = args;
 		this.errorMessage = errorMessage;
 	}
+
+	public BusinessException(final ErrorCode errorCode, final String errorMessage) {
+		this.errorCode = errorCode;
+		this.args = null;
+		this.errorMessage = errorMessage;
+	}
 }
