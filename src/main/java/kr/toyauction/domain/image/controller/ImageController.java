@@ -13,15 +13,11 @@ import kr.toyauction.infra.property.IntraProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -40,8 +36,7 @@ public class ImageController {
 
 	@PostMapping(value = Url.IMAGE)
 	@PreAuthorize("hasRole('USER')")
-	public SuccessResponse<ImagePostResponse> postFile(@Validated ImagePostRequest request, VerifyMember verifyMember,
-													   @RequestHeader Map<String, Object> headers) {
+	public SuccessResponse<ImagePostResponse> postFile(@Validated ImagePostRequest request, VerifyMember verifyMember) {
 		ImageEntity imageEntity = imageService.save(request, verifyMember.getId());
 		return SuccessResponseHelper.success(new ImagePostResponse(imageEntity, intraProperty.getAwsS3Host()));
 	}
