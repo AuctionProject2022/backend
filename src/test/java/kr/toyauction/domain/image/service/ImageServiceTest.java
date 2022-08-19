@@ -61,7 +61,7 @@ class ImageServiceTest {
 				.build();
 
 		// when
-		ImageEntity saved = imageService.save(request);
+		ImageEntity saved = imageService.save(request, 0L);
 
 		// then
 		assertNotNull(saved.getId());
@@ -83,7 +83,7 @@ class ImageServiceTest {
 
 		// when
 		assertThrows(NullPointerException.class, () -> {
-			imageService.save(request);
+			imageService.save(request, 0L);
 		});
 
 		// then

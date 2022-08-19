@@ -38,6 +38,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -67,6 +68,7 @@ class ImageControllerTest {
 								.operationPreprocessors()
 								.withRequestDefaults(prettyPrint())
 								.withResponseDefaults(prettyPrint()))
+				.apply(springSecurity())
 				.build();
 	}
 
@@ -93,11 +95,12 @@ class ImageControllerTest {
 		updateDateTime.setAccessible(true);
 		updateDateTime.set(imageEntity, LocalDateTime.now());
 
-		given(imageService.save(any(ImagePostRequest.class))).willReturn(imageEntity);
+		given(imageService.save(any(ImagePostRequest.class), any(Long.class))).willReturn(imageEntity);
 
 		// when
 		ResultActions resultActions = mockMvc.perform(multipart(Url.IMAGE)
-						.file(file))
+						.file(file)
+						.header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN))
 				.andDo(print())
 				.andDo(document("post-file",
 						requestParts(partWithName("image").description("file parameter name")),
@@ -129,8 +132,8 @@ class ImageControllerTest {
 	void postFileIsFileNull() throws Exception {
 
 		// given
-		
-		
+
+
 		// when
 		ResultActions resultActions = mockMvc.perform(post(Url.IMAGE))
 				.andDo(print());

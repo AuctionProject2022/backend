@@ -27,13 +27,13 @@ public class ImageService {
 	private final IntraAwsS3Client intraAwsS3Client;
 
 	@Transactional
-	public ImageEntity save(final ImagePostRequest request) {
+	public ImageEntity save(final ImagePostRequest request, final Long memberId) {
 
 		String prefixKey = CommonUtils.generateS3PrefixKey();
 		String randomFilename = CommonUtils.generateRandomFilename(Objects.requireNonNull(request.getImage().getOriginalFilename()));
 
 		ImageEntity imageEntity = ImageEntity.builder()
-				.memberId(0L) // TODO
+				.memberId(memberId) // TODO
 				.path(prefixKey + randomFilename)
 				.build();
 		imageEntity.validation();
