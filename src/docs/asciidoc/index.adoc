@@ -187,12 +187,10 @@
 |G0006
 |BAD_REQUEST
 |허용되지 않는 콘텐츠 유형을 요청했습니다.
-|===
 
 |G0007
 |UNAUTHORIZED
 |잘못된 토큰 입니다.
-|===
 
 |G0008
 |FORBIDDEN
