@@ -7,10 +7,12 @@ import kr.toyauction.domain.image.service.ImageService;
 import kr.toyauction.domain.image.validation.ImageValidator;
 import kr.toyauction.global.dto.SuccessResponse;
 import kr.toyauction.global.dto.SuccessResponseHelper;
+import kr.toyauction.global.dto.VerifyMember;
 import kr.toyauction.global.property.Url;
 import kr.toyauction.infra.property.IntraProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -33,8 +35,9 @@ public class ImageController {
 
 
 	@PostMapping(value = Url.IMAGE)
-	public SuccessResponse<ImagePostResponse> postFile(@Validated ImagePostRequest request) {
-		ImageEntity imageEntity = imageService.save(request);
+	@PreAuthorize("hasRole('USER')")
+	public SuccessResponse<ImagePostResponse> postFile(@Validated ImagePostRequest request, VerifyMember verifyMember) {
+		ImageEntity imageEntity = imageService.save(request, verifyMember.getId());
 		return SuccessResponseHelper.success(new ImagePostResponse(imageEntity, intraProperty.getAwsS3Host()));
 	}
 }

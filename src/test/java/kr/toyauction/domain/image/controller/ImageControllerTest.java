@@ -3,9 +3,14 @@ package kr.toyauction.domain.image.controller;
 import kr.toyauction.domain.image.dto.ImagePostRequest;
 import kr.toyauction.domain.image.entity.ImageEntity;
 import kr.toyauction.domain.image.service.ImageService;
+import kr.toyauction.domain.member.entity.Member;
+import kr.toyauction.domain.member.entity.Platform;
+import kr.toyauction.domain.member.entity.Role;
+import kr.toyauction.domain.member.repository.MemberRepository;
 import kr.toyauction.global.error.GlobalErrorCode;
 import kr.toyauction.global.property.TestProperty;
 import kr.toyauction.global.property.Url;
+import kr.toyauction.global.token.JwtProvider;
 import kr.toyauction.global.util.CommonUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -38,6 +44,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -54,6 +61,12 @@ class ImageControllerTest {
 	@MockBean
 	ImageService imageService;
 
+	@Autowired
+	MemberRepository memberRepository;
+
+	@Autowired
+	JwtProvider jwtProvider;
+
 	@BeforeEach
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -67,6 +80,7 @@ class ImageControllerTest {
 								.operationPreprocessors()
 								.withRequestDefaults(prettyPrint())
 								.withResponseDefaults(prettyPrint()))
+				.apply(springSecurity())
 				.build();
 	}
 
@@ -93,11 +107,12 @@ class ImageControllerTest {
 		updateDateTime.setAccessible(true);
 		updateDateTime.set(imageEntity, LocalDateTime.now());
 
-		given(imageService.save(any(ImagePostRequest.class))).willReturn(imageEntity);
+		given(imageService.save(any(ImagePostRequest.class), any(Long.class))).willReturn(imageEntity);
 
 		// when
 		ResultActions resultActions = mockMvc.perform(multipart(Url.IMAGE)
-						.file(file))
+						.file(file)
+						.header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN))
 				.andDo(print())
 				.andDo(document("post-file",
 						requestParts(partWithName("image").description("file parameter name")),
@@ -129,8 +144,8 @@ class ImageControllerTest {
 	void postFileIsFileNull() throws Exception {
 
 		// given
-		
-		
+
+
 		// when
 		ResultActions resultActions = mockMvc.perform(post(Url.IMAGE))
 				.andDo(print());
@@ -163,5 +178,16 @@ class ImageControllerTest {
 		resultActions.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
 		resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
 		resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0001.name()));
+	}
+
+	private String getAccessToken() {
+		Member member = Member.builder()
+				.platformId("test@test.com")
+				.platform(Platform.google)
+				.picture("test")
+				.role(Role.ROLE_USER)
+				.username("test")
+				.build();
+		return jwtProvider.createToken(memberRepository.save(member));
 	}
 }

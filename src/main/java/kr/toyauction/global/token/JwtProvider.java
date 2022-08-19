@@ -1,12 +1,11 @@
 package kr.toyauction.global.token;
 
+import kr.toyauction.global.dto.VerifyMember;
 import kr.toyauction.domain.member.entity.Member;
-import kr.toyauction.global.exception.NoAuthorityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -72,12 +71,23 @@ public class JwtProvider implements InitializingBean {
         Claims claims = parseClaims(token);
 
         try{
+
+
             Collection<? extends GrantedAuthority> authorities =
                     Arrays.stream(claims.get(JwtEnum.AUTHORITY.getDescription()).toString().split(","))
                             .map(SimpleGrantedAuthority::new)
                             .collect(Collectors.toList());
-            User principal = new User("USER", "", authorities);
-            return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+
+            VerifyMember verifyMember = new VerifyMember();
+            Object memberId = claims.get(JwtEnum.USER_ID.getDescription());
+            verifyMember.setAuthorities(authorities);
+            verifyMember.setPrincipal(new User("USER", "", authorities));
+            verifyMember.setCredentials("");
+            verifyMember.setDetail(claims);
+            verifyMember.setId((memberId instanceof Integer ? (Integer)memberId : (Long)memberId ));
+            verifyMember.setName((String)claims.get(JwtEnum.USER_NAME.getDescription()));
+            verifyMember.setPlatform((String)claims.get(JwtEnum.PLATFORM.getDescription()));
+            return verifyMember;
         }catch (Exception e){
             logger.info("잘못 된 토큰 입니다.");
             return null;
@@ -106,5 +116,13 @@ public class JwtProvider implements InitializingBean {
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
+    }
+
+    private Map<String, Object>  getMapFromIoJsonwebtokenClaims(Claims claims){
+        Map<String, Object> expectedMap = new HashMap<String, Object>();
+        for(Map.Entry<String, Object> entry : claims.entrySet()) {
+            expectedMap.put(entry.getKey() , entry.getValue());
+        }
+        return expectedMap;
     }
 }
