@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,9 +44,13 @@ public class JwtProvider implements InitializingBean {
 
     public String createToken(Member member) {
         Claims claims = Jwts.claims();
+        String createDate = member.getCreateDatetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
         claims.put(JwtEnum.USER_ID.getDescription(), member.getId());
         claims.put(JwtEnum.AUTHORITY.getDescription(),member.getRole());
         claims.put(JwtEnum.USER_NAME.getDescription(), member.getUsername());
+        claims.put(JwtEnum.CREATE_DATE.getDescription(), createDate);
+        claims.put(JwtEnum.PLATFORM.getDescription(), member.getPlatform());
 
         // expiration time
         long now = (new Date()).getTime();

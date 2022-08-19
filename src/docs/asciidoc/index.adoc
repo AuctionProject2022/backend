@@ -271,8 +271,10 @@ PAYLOAD
 {
   "memberId": 1,
   "authority": "ROLE_USER",
-  "username": "LYldMy9o6d",
-  "expiration": "2022-08-15 05:39:17",
+  "username": "nipnKpkJ0B",
+  "createDate": "2022-08-19 19:18:23",
+  "platform": "google",
+  "expiration": "2022-08-20 01:18:24",
   "iss": "toyAuction"
 }
 ```

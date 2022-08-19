@@ -10,6 +10,8 @@ public enum JwtEnum {
     ISSUER("toyAuction"),
     USER_ID("memberId"),
     EXPIRATION("expiration"),
+    CREATE_DATE("createDate"),
+    PLATFORM("platform"),
     BEARER("Bearer ");
 
     private final String description;
