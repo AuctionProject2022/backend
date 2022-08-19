@@ -52,7 +52,7 @@ public class MemberServiceTest {
         memberRepository.save(member);
 
         // when
-        Member memberByUsername = memberService.getUsername(username);
+        Member memberByUsername = memberService.getMemberByUsername(username);
 
         // then
         assertNotNull(memberByUsername.getId());
@@ -82,6 +82,6 @@ public class MemberServiceTest {
         memberRepository.save(member);
 
         // when
-        assertThrows(DomainNotFoundException.class, () -> memberService.getUsername(username));
+        assertThrows(DomainNotFoundException.class, () -> memberService.getMemberByUsername(username));
     }
 }

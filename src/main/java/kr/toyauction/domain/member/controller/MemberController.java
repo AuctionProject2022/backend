@@ -48,9 +48,9 @@ public class MemberController {
     }
 
     @GetMapping(Url.MEMBER + "/username/{username}")
-    public SuccessResponse<MemberGetResponse> userName(@PathVariable final String username) {
+    public SuccessResponse<MemberGetResponse> getMemberByUsername(@PathVariable final String username) {
         if (!Pattern.matches(Regex.USERNAME,username)) throw new WrongValueException(username);
-        Member member = memberService.getUsername(username);
+        Member member = memberService.getMemberByUsername(username);
         return SuccessResponseHelper.success(new MemberGetResponse(member));
     }
 }

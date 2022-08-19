@@ -51,7 +51,7 @@ public class MemberService {
 	}
 
 	@Transactional(readOnly = true)
-	public Member getUsername(String username) {
+	public Member getMemberByUsername(String username) {
 		Member member = memberRepository.findByUsername(username);
 		if (member == null) throw new DomainNotFoundException();
 		return member;

@@ -80,7 +80,7 @@ public class MemberControllerTest {
         updateDateTime.setAccessible(true);
         updateDateTime.set(member, LocalDateTime.now());
 
-        given(memberService.getUsername(any())).willReturn(member);
+        given(memberService.getMemberByUsername(any())).willReturn(member);
 
         // when
         ResultActions resultActions = mockMvc.perform(get(Url.MEMBER + "/username/{username}", username)
