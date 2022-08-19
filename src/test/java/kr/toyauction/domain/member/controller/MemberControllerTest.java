@@ -1,6 +1,5 @@
 package kr.toyauction.domain.member.controller;
 
-import kr.toyauction.domain.member.dto.MemberGetResponse;
 import kr.toyauction.domain.member.entity.Member;
 import kr.toyauction.domain.member.service.MemberService;
 import kr.toyauction.global.error.GlobalErrorCode;
@@ -27,7 +26,6 @@ import java.time.LocalDateTime;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
@@ -152,6 +150,23 @@ public class MemberControllerTest {
     void getMemberByUsernameSpecialText() throws Exception{
         // given
         String username = "test!";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(Url.MEMBER + "/username/{username}", username)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print());
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+        resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
+        resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0003.name()));
+    }
+    @Test
+    @DisplayName("username 에 띄어쓰기가 있는 경우")
+    void getMemberByUsernameSpacingText() throws Exception{
+        // given
+        String username = "test Test";
 
         // when
         ResultActions resultActions = mockMvc.perform(get(Url.MEMBER + "/username/{username}", username)
