@@ -30,4 +30,11 @@ public class MemberController {
         Member member = memberService.getMemberByUsername(username);
         return SuccessResponseHelper.success(new MemberGetResponse(member));
     }
+
+    @PatchMapping(Url.MEMBER + "/{memberId}")
+    @PreAuthorize("hasRole('USER')")
+    public SuccessResponse<String> patchMember(@PathVariable final Long memberId, @Validated @RequestBody final MemberPatchRequest request) {
+        memberService.patchMember(memberId,request);
+        return SuccessResponseHelper.success(null);
+    }
 }

@@ -5,6 +5,7 @@ import kr.toyauction.global.dto.ErrorResponseHelper;
 import kr.toyauction.global.error.GlobalErrorCode;
 import kr.toyauction.global.exception.BusinessException;
 import kr.toyauction.global.exception.DomainNotFoundException;
+import kr.toyauction.global.exception.OverlapException;
 import kr.toyauction.global.exception.WrongValueException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,12 @@ import javax.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
 
     private final ErrorResponseHelper errorResponseHelper;
+
+    @ExceptionHandler(OverlapException.class)
+    public ResponseEntity<ErrorResponse> handleOverlapException(OverlapException e) {
+        log.error("OverlapException : ", e);
+        return errorResponseHelper.code(GlobalErrorCode.G0009);
+    }
 
     @ExceptionHandler(WrongValueException.class)
     public ResponseEntity<ErrorResponse> handleWrongValueException(WrongValueException e) {
