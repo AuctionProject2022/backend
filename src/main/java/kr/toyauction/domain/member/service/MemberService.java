@@ -22,33 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
 	private final MemberRepository memberRepository;
-	private final MemberQueryRepository memberQueryRepository;
-	private final ApplicationEventPublisher applicationEventPublisher;
-
-	@Transactional
-	public Member registerMember(@NonNull final MemberPostRequest memberPostRequest) {
-
-		Member member = Member.builder()
-				.username(memberPostRequest.getUsername())
-				.build();
-		member.validation();
-		Member saved = memberRepository.save(member);
-
-		// AlertPublishEvent 는 global 에 위치시켜 여러 도메인에서 호출할 수 있게 한다.
-		applicationEventPublisher.publishEvent(new AlertPublishEvent(saved.getId(), "ALERT_REGISTER_MEMBER"));
-		return saved;
-	}
-
-	@Transactional(readOnly = true)
-	public Member getMember(Long memberId) {
-		return this.memberRepository.findById(memberId)
-				.orElseThrow(() -> new DomainNotFoundException(memberId));
-	}
-
-	@Transactional(readOnly = true)
-	public Page<Member> pageMember(@NonNull final Pageable pageable, final MemberGetRequest memberGetRequest) {
-		return this.memberQueryRepository.page(pageable, memberGetRequest);
-	}
 
 	@Transactional(readOnly = true)
 	public Member getMemberByUsername(String username) {

@@ -3,7 +3,6 @@ package kr.toyauction.domain.member.service;
 import kr.toyauction.domain.member.entity.Member;
 import kr.toyauction.domain.member.entity.Platform;
 import kr.toyauction.domain.member.entity.Role;
-import kr.toyauction.domain.member.repository.MemberQueryRepository;
 import kr.toyauction.domain.member.repository.MemberRepository;
 import kr.toyauction.global.exception.DomainNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,12 +25,10 @@ public class MemberServiceTest {
     MemberRepository memberRepository;
 
     MemberService memberService;
-    MemberQueryRepository memberQueryRepository;
-    ApplicationEventPublisher applicationEventPublisher;
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository,memberQueryRepository,applicationEventPublisher);
+        this.memberService = new MemberService(memberRepository);
     }
 
     @Test
