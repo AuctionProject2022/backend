@@ -59,7 +59,7 @@ property:
     aws-s3-secret-access-key: secret_access_key
 
 jwt:
-  secret: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  secret: JwtSecretTestCodeKeyJwtSecretTestCodeKeyJwtSecretTestCodeKeyJwtSecretTestCodeKeyJwtSecretTestCodeKeyJwtSecretTestCodeKey
   token_expiration: 21600000 # 6 시간
 
 social:

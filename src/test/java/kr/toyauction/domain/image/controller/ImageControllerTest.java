@@ -93,7 +93,7 @@ class ImageControllerTest {
 		updateDateTime.setAccessible(true);
 		updateDateTime.set(imageEntity, LocalDateTime.now());
 
-		given(imageService.save(any(ImagePostRequest.class))).willReturn(imageEntity);
+		given(imageService.save(any(ImagePostRequest.class), any(Long.class))).willReturn(imageEntity);
 
 		// when
 		ResultActions resultActions = mockMvc.perform(multipart(Url.IMAGE)
