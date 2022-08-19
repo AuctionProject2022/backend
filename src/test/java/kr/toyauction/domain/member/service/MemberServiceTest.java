@@ -10,17 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @EnableJpaAuditing
@@ -46,7 +42,6 @@ public class MemberServiceTest {
         String username = "test";
 
         Member member = Member.builder()
-                .id(7L)
                 .platformId("test@test.com")
                 .platform(Platform.google)
                 .picture("test")
@@ -61,13 +56,13 @@ public class MemberServiceTest {
 
         // then
         assertNotNull(memberByUsername.getId());
-        assertNotNull(memberByUsername.getPlatformId());
-        assertNotNull(memberByUsername.getPlatform());
-        assertNotNull(memberByUsername.getPicture());
-        assertNotNull(memberByUsername.getRole());
-        assertNotNull(memberByUsername.getUsername());
-        assertNotNull(memberByUsername.getCreateDatetime());
-        assertNotNull(memberByUsername.getUpdateDatetime());
+        assertEquals(member.getPlatformId(),memberByUsername.getPlatformId());
+        assertEquals(member.getPlatform(),memberByUsername.getPlatform());
+        assertEquals(member.getPicture(),memberByUsername.getPicture());
+        assertEquals(member.getRole(),memberByUsername.getRole());
+        assertEquals(member.getUsername(),memberByUsername.getUsername());
+        assertEquals(member.getCreateDatetime(),memberByUsername.getCreateDatetime());
+        assertEquals(member.getUpdateDatetime(),memberByUsername.getUpdateDatetime());
     }
 
     @Test
@@ -77,7 +72,6 @@ public class MemberServiceTest {
         String username = "test";
 
         Member member = Member.builder()
-                .id(7L)
                 .platformId("test@test.com")
                 .platform(Platform.google)
                 .picture("test")
