@@ -3,14 +3,9 @@ package kr.toyauction.domain.image.controller;
 import kr.toyauction.domain.image.dto.ImagePostRequest;
 import kr.toyauction.domain.image.entity.ImageEntity;
 import kr.toyauction.domain.image.service.ImageService;
-import kr.toyauction.domain.member.entity.Member;
-import kr.toyauction.domain.member.entity.Platform;
-import kr.toyauction.domain.member.entity.Role;
-import kr.toyauction.domain.member.repository.MemberRepository;
 import kr.toyauction.global.error.GlobalErrorCode;
 import kr.toyauction.global.property.TestProperty;
 import kr.toyauction.global.property.Url;
-import kr.toyauction.global.token.JwtProvider;
 import kr.toyauction.global.util.CommonUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +28,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -60,12 +54,6 @@ class ImageControllerTest {
 
 	@MockBean
 	ImageService imageService;
-
-	@Autowired
-	MemberRepository memberRepository;
-
-	@Autowired
-	JwtProvider jwtProvider;
 
 	@BeforeEach
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
@@ -178,16 +166,5 @@ class ImageControllerTest {
 		resultActions.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
 		resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
 		resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0001.name()));
-	}
-
-	private String getAccessToken() {
-		Member member = Member.builder()
-				.platformId("test@test.com")
-				.platform(Platform.google)
-				.picture("test")
-				.role(Role.ROLE_USER)
-				.username("test")
-				.build();
-		return jwtProvider.createToken(memberRepository.save(member));
 	}
 }
