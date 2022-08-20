@@ -1,5 +1,7 @@
 package kr.toyauction.domain.member.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.toyauction.domain.member.dto.MemberPatchRequest;
 import kr.toyauction.domain.member.entity.Member;
 import kr.toyauction.domain.member.service.MemberService;
 import kr.toyauction.global.error.GlobalErrorCode;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
@@ -26,11 +29,13 @@ import java.time.LocalDateTime;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -46,6 +51,9 @@ public class MemberControllerTest {
     @MockBean
     MemberService memberService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -59,6 +67,7 @@ public class MemberControllerTest {
                                 .operationPreprocessors()
                                 .withRequestDefaults(prettyPrint())
                                 .withResponseDefaults(prettyPrint()))
+                .apply(springSecurity())
                 .build();
     }
 
@@ -178,5 +187,31 @@ public class MemberControllerTest {
         resultActions.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
         resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
         resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0003.name()));
+    }
+
+    @Test
+    @DisplayName("유저정보 수정")
+    void patchMember() throws Exception{
+
+        // given
+        Long memberId = 1L;
+        MemberPatchRequest request = new MemberPatchRequest();
+        request.setUsername("testUser");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andDo(document("patch-member",
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 고유 아이디")
+                        )
+                ));
+
+        // then
+        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
     }
 }
