@@ -26,7 +26,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         GlobalErrorCode errorCode = GlobalErrorCode.G0008;
         ErrorResponse errorResponse = new ErrorResponse(errorCode.name(),messageSource.getMessage(errorCode.name(), null, LocaleContextHolder.getLocale()));
 
