@@ -119,7 +119,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("username 이 1글자로 들어오는 경우")
+    @DisplayName("username 이 한 글자로 들어오는 경우")
     void getMemberByUsernameMinText() throws Exception{
         // given
         String username = "t";
@@ -137,7 +137,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("username 이 11글자로 들어오는 경우")
+    @DisplayName("username 이 열한 글자로 들어오는 경우")
     void getMemberByUsernameMaxText() throws Exception{
         // given
         String username = "testUsernam";
@@ -213,5 +213,166 @@ public class MemberControllerTest {
         // then
         resultActions.andExpect(status().isOk());
         resultActions.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+    }
+
+    @Test
+    @DisplayName("유저정보 수정 - 토큰이 없을 때")
+    void patchMemberNullToken() throws Exception{
+
+        // given
+        Long memberId = 1L;
+        MemberPatchRequest request = new MemberPatchRequest();
+        request.setUsername("testUser");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andDo(document("patch-member",
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 고유 아이디")
+                        )
+                ));
+
+        // then
+        resultActions.andExpect(status().isUnauthorized());
+        resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
+        resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0007.name()));
+    }
+
+    @Test
+    @DisplayName("유저정보 수정 - 변경 닉네임이 한 글자로 들어오는 경우")
+    void patchMemberMinUsername() throws Exception{
+
+        // given
+        Long memberId = 1L;
+        MemberPatchRequest request = new MemberPatchRequest();
+        request.setUsername("t");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andDo(document("patch-member",
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 고유 아이디")
+                        )
+                ));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
+        resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0001.name()));
+    }
+
+    @Test
+    @DisplayName("유저정보 수정 - 변경 닉네임이 열한 글자로 들어오는 경우")
+    void patchMemberMaxUsername() throws Exception{
+
+        // given
+        Long memberId = 1L;
+        MemberPatchRequest request = new MemberPatchRequest();
+        request.setUsername("testUser123");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andDo(document("patch-member",
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 고유 아이디")
+                        )
+                ));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
+        resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0001.name()));
+    }
+
+    @Test
+    @DisplayName("유저정보 수정 - 변경 닉네임에 특수 문자가 들어오는 경우")
+    void patchMemberSpecialText() throws Exception{
+
+        // given
+        Long memberId = 1L;
+        MemberPatchRequest request = new MemberPatchRequest();
+        request.setUsername("test!@#");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andDo(document("patch-member",
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 고유 아이디")
+                        )
+                ));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
+        resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0001.name()));
+    }
+
+    @Test
+    @DisplayName("유저정보 수정 - 변경 닉네임에 띄어쓰기가 들어오는 경우")
+    void patchMemberSpacingText() throws Exception{
+
+        // given
+        Long memberId = 1L;
+        MemberPatchRequest request = new MemberPatchRequest();
+        request.setUsername("test ttt");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andDo(document("patch-member",
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 고유 아이디")
+                        )
+                ));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
+        resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0001.name()));
+    }
+
+    @Test
+    @DisplayName("유저정보 수정 - MemberId 가 문자열로 들어오는 경우")
+    void patchMemberIdInputText() throws Exception{
+
+        // given
+        String memberId = "text";
+        MemberPatchRequest request = new MemberPatchRequest();
+        request.setUsername("testUser");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andDo(document("patch-member",
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 고유 아이디")
+                        )
+                ));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
+        resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0001.name()));
     }
 }

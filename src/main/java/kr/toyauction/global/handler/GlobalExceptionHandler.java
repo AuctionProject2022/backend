@@ -18,6 +18,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
@@ -29,6 +30,12 @@ import javax.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
 
     private final ErrorResponseHelper errorResponseHelper;
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        log.error("OverlapException : ", e);
+        return errorResponseHelper.code(GlobalErrorCode.G0001);
+    }
 
     @ExceptionHandler(OverlapException.class)
     public ResponseEntity<ErrorResponse> handleOverlapException(OverlapException e) {
