@@ -5,6 +5,7 @@ import kr.toyauction.domain.member.entity.Member;
 import kr.toyauction.domain.member.service.MemberService;
 import kr.toyauction.global.dto.SuccessResponse;
 import kr.toyauction.global.dto.SuccessResponseHelper;
+import kr.toyauction.global.dto.VerifyMember;
 import kr.toyauction.global.exception.WrongValueException;
 import kr.toyauction.global.property.Regex;
 import kr.toyauction.global.property.Url;
@@ -29,10 +30,10 @@ public class MemberController {
         return SuccessResponseHelper.success(new MemberGetResponse(member));
     }
 
-    @PatchMapping(Url.MEMBER + "/{memberId}")
+    @PatchMapping(Url.MEMBER)
     @PreAuthorize("hasRole('USER')")
-    public SuccessResponse<String> patchMember(@PathVariable final Long memberId, @Validated @RequestBody final MemberPatchRequest request) {
-        memberService.patchMember(memberId,request);
+    public SuccessResponse<String> patchMember(@Validated @RequestBody final MemberPatchRequest request, VerifyMember verifyMember) {
+        memberService.patchMember(verifyMember.getId(),request);
         return SuccessResponseHelper.success(null);
     }
 }

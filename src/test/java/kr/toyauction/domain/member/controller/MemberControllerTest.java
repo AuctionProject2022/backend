@@ -194,21 +194,16 @@ public class MemberControllerTest {
     void patchMember() throws Exception{
 
         // given
-        Long memberId = 1L;
         MemberPatchRequest request = new MemberPatchRequest();
         request.setUsername("testUser");
 
         // when
-        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
+        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
-                .andDo(document("patch-member",
-                        pathParameters(
-                                parameterWithName("memberId").description("회원 고유 아이디")
-                        )
-                ));
+                .andDo(document("patch-member"));
 
         // then
         resultActions.andExpect(status().isOk());
@@ -220,20 +215,14 @@ public class MemberControllerTest {
     void patchMemberNullToken() throws Exception{
 
         // given
-        Long memberId = 1L;
         MemberPatchRequest request = new MemberPatchRequest();
         request.setUsername("testUser");
 
         // when
-        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
+        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
-                .andDo(document("patch-member",
-                        pathParameters(
-                                parameterWithName("memberId").description("회원 고유 아이디")
-                        )
-                ));
+                .andDo(print());
 
         // then
         resultActions.andExpect(status().isUnauthorized());
@@ -246,21 +235,15 @@ public class MemberControllerTest {
     void patchMemberMinUsername() throws Exception{
 
         // given
-        Long memberId = 1L;
         MemberPatchRequest request = new MemberPatchRequest();
         request.setUsername("t");
 
         // when
-        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
+        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
-                .andDo(document("patch-member",
-                        pathParameters(
-                                parameterWithName("memberId").description("회원 고유 아이디")
-                        )
-                ));
+                .andDo(print());
 
         // then
         resultActions.andExpect(status().isBadRequest());
@@ -273,21 +256,15 @@ public class MemberControllerTest {
     void patchMemberMaxUsername() throws Exception{
 
         // given
-        Long memberId = 1L;
         MemberPatchRequest request = new MemberPatchRequest();
         request.setUsername("testUser123");
 
         // when
-        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
+        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
-                .andDo(document("patch-member",
-                        pathParameters(
-                                parameterWithName("memberId").description("회원 고유 아이디")
-                        )
-                ));
+                .andDo(print());
 
         // then
         resultActions.andExpect(status().isBadRequest());
@@ -300,21 +277,15 @@ public class MemberControllerTest {
     void patchMemberSpecialText() throws Exception{
 
         // given
-        Long memberId = 1L;
         MemberPatchRequest request = new MemberPatchRequest();
         request.setUsername("test!@#");
 
         // when
-        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
+        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
-                .andDo(document("patch-member",
-                        pathParameters(
-                                parameterWithName("memberId").description("회원 고유 아이디")
-                        )
-                ));
+                .andDo(print());
 
         // then
         resultActions.andExpect(status().isBadRequest());
@@ -327,48 +298,15 @@ public class MemberControllerTest {
     void patchMemberSpacingText() throws Exception{
 
         // given
-        Long memberId = 1L;
         MemberPatchRequest request = new MemberPatchRequest();
         request.setUsername("test ttt");
 
         // when
-        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
+        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
-                .andDo(document("patch-member",
-                        pathParameters(
-                                parameterWithName("memberId").description("회원 고유 아이디")
-                        )
-                ));
-
-        // then
-        resultActions.andExpect(status().isBadRequest());
-        resultActions.andExpect(jsonPath("success").value(Boolean.FALSE));
-        resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0001.name()));
-    }
-
-    @Test
-    @DisplayName("유저정보 수정 - MemberId 가 문자열로 들어오는 경우")
-    void patchMemberIdInputText() throws Exception{
-
-        // given
-        String memberId = "text";
-        MemberPatchRequest request = new MemberPatchRequest();
-        request.setUsername("testUser");
-
-        // when
-        ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER + "/{memberId}", memberId)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
-                .andDo(document("patch-member",
-                        pathParameters(
-                                parameterWithName("memberId").description("회원 고유 아이디")
-                        )
-                ));
+                .andDo(print());
 
         // then
         resultActions.andExpect(status().isBadRequest());
