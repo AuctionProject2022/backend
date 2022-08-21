@@ -1,10 +1,12 @@
 package kr.toyauction.domain.member.service;
 
+import kr.toyauction.domain.member.dto.MemberPatchRequest;
 import kr.toyauction.domain.member.entity.Member;
 import kr.toyauction.domain.member.entity.Platform;
 import kr.toyauction.domain.member.entity.Role;
 import kr.toyauction.domain.member.repository.MemberRepository;
 import kr.toyauction.global.exception.DomainNotFoundException;
+import kr.toyauction.global.exception.OverlapException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -79,5 +81,91 @@ public class MemberServiceTest {
 
         // when
         assertThrows(DomainNotFoundException.class, () -> memberService.getMemberByUsername(username));
+    }
+
+    @Test
+    @DisplayName("유저정보 수정")
+    void patchMember(){
+        // given
+        Long memberId = 1L;
+        String username = "change";
+        MemberPatchRequest request = MemberPatchRequest.builder()
+                .username(username)
+                .build();
+
+        Member member = Member.builder()
+                .platformId("test@test.com")
+                .platform(Platform.google)
+                .picture("test")
+                .role(Role.ROLE_USER)
+                .username("existing")
+                .build();
+
+        memberRepository.save(member);
+
+        // when
+        memberService.patchMember(memberId,request);
+        Member resultMember = memberRepository.getById(memberId);
+
+        // then
+        assertNotNull(resultMember.getId());
+        assertEquals(resultMember.getUsername(),username);
+    }
+
+    @Test
+    @DisplayName("유저정보 수정 - 동일 닉네임 존재")
+    void patchMemberOverlap(){
+        // given
+        Long memberId = 1L;
+        String username = "overlap";
+        MemberPatchRequest request = MemberPatchRequest.builder()
+                .username(username)
+                .build();
+
+        Member member = Member.builder()
+                .platformId("test@test.com")
+                .platform(Platform.google)
+                .picture("test")
+                .role(Role.ROLE_USER)
+                .username("existing")
+                .build();
+
+        Member overlapMember = Member.builder()
+                .platformId("test@overlap.com")
+                .platform(Platform.google)
+                .picture("test")
+                .role(Role.ROLE_USER)
+                .username("overlap")
+                .build();
+
+        memberRepository.save(member);
+        memberRepository.save(overlapMember);
+
+        // when
+        assertThrows(OverlapException.class, () -> memberService.patchMember(memberId,request));
+    }
+
+    @Test
+    @DisplayName("유저정보 수정 - 없는 회원 id")
+    void patchMemberNull(){
+        // given
+        Long memberId = 999L;
+        String username = "change";
+        MemberPatchRequest request = MemberPatchRequest.builder()
+                .username(username)
+                .build();
+
+        Member member = Member.builder()
+                .platformId("test@test.com")
+                .platform(Platform.google)
+                .picture("test")
+                .role(Role.ROLE_USER)
+                .username("existing")
+                .build();
+
+        memberRepository.save(member);
+
+        // when
+        assertThrows(DomainNotFoundException.class, () -> memberService.patchMember(memberId,request));
     }
 }
