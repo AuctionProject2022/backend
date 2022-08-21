@@ -241,6 +241,7 @@ public SuccessResponse<String> patchMember(@Validated @RequestBody final MemberP
 }
 ```
 @PreAuthorize 어노테이션을 이용하여 사용가능한 권한을 설정합니다.
+
 VerifyMember verifyMember 를 매개변수로 사용하면 토큰에 담긴 정보를 이용 할수 있습니다.
 
 ### 테스트 코드에 사용하기 위한 토큰
