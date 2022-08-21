@@ -228,3 +228,58 @@ G0003=invalid value : {0}
 G0004=Request method not supported
 G0005=Required request body is missing
 ```
+
+## 권한
+
+### 권한설정 및 토큰정보 사용
+```
+@PatchMapping(Url.MEMBER)
+@PreAuthorize("hasRole('USER')")
+public SuccessResponse<String> patchMember(@Validated @RequestBody final MemberPatchRequest request, VerifyMember verifyMember) {
+    memberService.patchMember(verifyMember.getId(),request);
+    return SuccessResponseHelper.success(null);
+}
+```
+@PreAuthorize 어노테이션을 이용하여 사용가능한 권한을 설정합니다.
+VerifyMember verifyMember 를 매개변수로 사용하면 토큰에 담긴 정보를 이용 할수 있습니다.
+
+### 테스트 코드에 사용하기 위한 토큰
+token : eyJhbGciOiJIUzUxMiJ9.eyJtZW1iZXJJZCI6MSwiYXV0aG9yaXR5IjoiUk9MRV9VU0VSIiwidXNlcm5hbWUiOiJ0ZXN0IiwiY3JlYXRlRGF0ZSI6IjIwMjItMDgtMTkgMjM6MTk6MTUiLCJwbGF0Zm9ybSI6Imdvb2dsZSIsImV4cGlyYXRpb24iOiIyOTIyNzg5OTQtMDgtMTcgMTY6MTI6NTUiLCJpc3MiOiJ0b3lBdWN0aW9uIn0.FxFA38q7SUnnoPzW6EmcbulUQaQYGnSTy9vEFKCJBlJ_Qis4eOMAf4CtGOGk2JPAArXX_QHNYrxIPYtIM_izww
+- json 정보
+```
+HEADER
+{
+  "alg": "HS512"
+}
+
+PAYLOAD
+{
+  "memberId": 1,
+  "authority": "ROLE_USER",
+  "username": "test",
+  "createDate": "2022-08-19 23:19:15",
+  "platform": "google",
+  "expiration": "292278994-08-17 16:12:55",
+  "iss": "toyAuction"
+}
+```
+token 은 testProperty 에서 가져와서 사용하시면 됩니다.
+```
+project(test)
+    ├─ global
+        ├─ property
+            ├─ TestProperty
+```
+
+### 테스트 코드 작성 예시
+```
+@BeforeEach
+public void setUp(WebApplicationContext webApplicationContext) {
+    this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+            .apply(springSecurity())
+            .build();
+}
+ResultActions resultActions = mockMvc.perform(patch(Url.MEMBER)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
+```
+springSecurity 설정을 추가 하고 header 에 테스트용 토큰을 넣어 줍니다.
