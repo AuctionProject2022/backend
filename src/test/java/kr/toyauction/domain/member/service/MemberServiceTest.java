@@ -87,7 +87,6 @@ public class MemberServiceTest {
     @DisplayName("유저정보 수정")
     void patchMember(){
         // given
-        Long memberId = 1L;
         String username = "change";
         MemberPatchRequest request = MemberPatchRequest.builder()
                 .username(username)
@@ -101,7 +100,8 @@ public class MemberServiceTest {
                 .username("existing")
                 .build();
 
-        memberRepository.save(member);
+        member = memberRepository.save(member);
+        Long memberId = member.getId();
 
         // when
         memberService.patchMember(memberId,request);
