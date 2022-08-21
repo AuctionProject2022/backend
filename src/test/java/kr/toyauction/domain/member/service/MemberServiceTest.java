@@ -149,7 +149,7 @@ public class MemberServiceTest {
     @DisplayName("유저정보 수정 - 없는 회원 id")
     void patchMemberNull(){
         // given
-        Long memberId = 999L;
+        Long memberId = Long.MIN_VALUE;
         String username = "change";
         MemberPatchRequest request = MemberPatchRequest.builder()
                 .username(username)

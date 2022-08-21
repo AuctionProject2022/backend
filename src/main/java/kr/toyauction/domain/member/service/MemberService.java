@@ -18,6 +18,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,15 +29,15 @@ public class MemberService {
 
 	@Transactional(readOnly = true)
 	public Member getMemberByUsername(String username) {
-		Member member = memberRepository.findByUsername(username);
-		if (member == null) throw new DomainNotFoundException();
-		return member;
+		return memberRepository.findByUsername(username)
+				.orElseThrow(DomainNotFoundException::new);
 	}
 
 	@Transactional
 	public void patchMember(Long memberId, MemberPatchRequest request){
-		Member memberByUsername = memberRepository.findByUsername(request.getUsername());
-		if (memberByUsername != null) throw new OverlapException();
+		Optional<Member> overlapMember = memberRepository.findByUsername(request.getUsername());
+		if (overlapMember.isPresent()) throw new OverlapException();
+
 
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new DomainNotFoundException(memberId));

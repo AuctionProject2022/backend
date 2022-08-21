@@ -61,7 +61,8 @@ public class MemberRepositoryTest {
 
         // when
         memberRepository.save(member);
-        Member getMember = memberRepository.findByUsername("testName");
+        Member getMember = memberRepository.findByUsername("testName")
+                .orElseThrow();
 
         // then
         assertNotNull(getMember.getId());
@@ -88,7 +89,8 @@ public class MemberRepositoryTest {
 
         // when
         memberRepository.save(member);
-        Member getMember = memberRepository.findByPlatformId("test@test.com");
+        Member getMember = memberRepository.findByPlatformId("test@test.com")
+                .orElseThrow();;
 
         // then
         assertNotNull(getMember.getId());
