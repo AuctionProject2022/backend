@@ -1,11 +1,13 @@
 package kr.toyauction.domain.alert.entity;
 
 
+import kr.toyauction.global.entity.AlertCode;
 import kr.toyauction.global.entity.BaseEntity;
 import kr.toyauction.global.entity.EntitySupport;
 import kr.toyauction.global.exception.DomainValidationException;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -35,6 +37,11 @@ public class Alert extends BaseEntity implements EntitySupport {
 
 	@Column(nullable = false)
 	private String url;
+
+	@Column(nullable = false)
+	private boolean alertRead;
+
+	private String remainingTime;
 
 	@Override
 	public void validation() {

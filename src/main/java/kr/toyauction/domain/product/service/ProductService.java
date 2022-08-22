@@ -8,6 +8,8 @@ import kr.toyauction.domain.product.entity.Product;
 import kr.toyauction.domain.product.entity.ProductStatus;
 import kr.toyauction.domain.product.repository.ProductQueryRepository;
 import kr.toyauction.domain.product.repository.ProductRepository;
+import kr.toyauction.global.entity.AlertCode;
+import kr.toyauction.global.event.AlertPublishEvent;
 import kr.toyauction.global.event.ImageProductEvent;
 import kr.toyauction.global.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -57,12 +62,21 @@ public class ProductService {
 		Product saved = productRepository.save(product);
 
 		// PRODUCT_THUMBNAIL
-		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
-				.thumbnailImageId(productPostRequest.getThumbnailImageId())
-				.imageIds(productPostRequest.getImageIds())
-				.targetId(saved.getId())
-				.build());
+//		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
+//				.thumbnailImageId(productPostRequest.getThumbnailImageId())
+//				.imageIds(productPostRequest.getImageIds())
+//				.targetId(saved.getId())
+//				.build());
 
+		Duration remainingTime = Duration.between(productPostRequest.getStartSaleDateTime() , productPostRequest.getEndSaleDateTime());
+		Object[] messageList = {saved.getProductName(),saved.getMinBidPrice()};
+		applicationEventPublisher.publishEvent(
+				new AlertPublishEvent(saved.getRegisterMemberId()
+						,AlertCode.AC0006
+						,AlertCode.AC0006.getMessage()
+						,AlertCode.AC0006.getUrl()+"/"+saved.getId()
+						,Long.toString(remainingTime.getSeconds())
+						,messageList));
 		return saved;
 	}
 

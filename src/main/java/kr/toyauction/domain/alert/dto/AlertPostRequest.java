@@ -1,6 +1,6 @@
 package kr.toyauction.domain.alert.dto;
 
-import kr.toyauction.domain.alert.entity.AlertCode;
+import kr.toyauction.global.entity.AlertCode;
 import lombok.*;
 
 import javax.persistence.EnumType;
@@ -19,6 +19,9 @@ public class AlertPostRequest {
 	private Long memberId;
 
 	@NotBlank
+	private Long domainId;
+
+	@NotBlank
 	private String title;
 
 	@NotBlank
@@ -26,8 +29,12 @@ public class AlertPostRequest {
 
 	@NotNull
 	@Enumerated(EnumType.STRING)
-	private AlertCode code;
+	private AlertCode alertCode;
 
 	@NotBlank
 	private String url;
+
+	private String remainingTime;
+
+	private Object[] messageList;
 }
