@@ -19,9 +19,6 @@ public class AlertPostRequest {
 	private Long memberId;
 
 	@NotBlank
-	private Long domainId;
-
-	@NotBlank
 	private String title;
 
 	@NotBlank
