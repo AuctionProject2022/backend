@@ -14,7 +14,7 @@ public enum AlertCode {
     AC0006("판매 등록 완료","AUCTION_SUCCESS","/프론트url")
     ;
 
-    private final String description;
+    private final String title;
     private final String message;
     private final String url;
 

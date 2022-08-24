@@ -24,7 +24,7 @@ public class AlertService {
 
 		Alert alert = Alert.builder()
 				.memberId(alertPostRequest.getMemberId())
-				.title(alertPostRequest.getAlertCode().getDescription())
+				.title(alertPostRequest.getAlertCode().getTitle())
 				.contents(messageSource.getMessage(alertPostRequest.getContents(),alertPostRequest.getMessageList(), LocaleContextHolder.getLocale()))
 				.code(alertPostRequest.getAlertCode())
 				.url(alertPostRequest.getUrl())

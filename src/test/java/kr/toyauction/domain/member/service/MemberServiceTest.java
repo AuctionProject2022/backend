@@ -34,7 +34,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("username 으로 유저 정보 조회")
+    @DisplayName("success : username 으로 유저 정보 조회")
     void getMemberByUsername(){
         // given
         String username = "test";
@@ -64,7 +64,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("username 의 유저 정보가 존재 하지 않을 때")
+    @DisplayName("fail : username 의 유저 정보가 존재 하지 않을 때")
     void getMemberByUsernameNull(){
         // given
         String username = "test";
@@ -84,7 +84,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("유저정보 수정")
+    @DisplayName("success : 유저정보 수정")
     void patchMember(){
         // given
         String username = "change";
@@ -113,7 +113,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("유저정보 수정 - 동일 닉네임 존재")
+    @DisplayName("fail : 유저정보 수정 - 동일 닉네임 존재")
     void patchMemberOverlap(){
         // given
         Long memberId = 1L;
@@ -146,7 +146,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("유저정보 수정 - 없는 회원 id")
+    @DisplayName("fail : 유저정보 수정 - 없는 회원 id")
     void patchMemberNull(){
         // given
         Long memberId = Long.MIN_VALUE;

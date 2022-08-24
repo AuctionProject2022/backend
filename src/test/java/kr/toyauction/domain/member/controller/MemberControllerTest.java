@@ -72,7 +72,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("username 으로 member 검색")
+    @DisplayName("success : username 으로 member 검색")
     void getMemberByUsername() throws Exception{
 
         // given
@@ -119,7 +119,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("username 이 한 글자로 들어오는 경우")
+    @DisplayName("fail : username 이 한 글자로 들어오는 경우")
     void getMemberByUsernameMinText() throws Exception{
         // given
         String username = "t";
@@ -137,7 +137,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("username 이 열한 글자로 들어오는 경우")
+    @DisplayName("fail : username 이 열한 글자로 들어오는 경우")
     void getMemberByUsernameMaxText() throws Exception{
         // given
         String username = "testUsernam";
@@ -155,7 +155,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("username 에 특수문자가 들어오는 경우")
+    @DisplayName("fail : username 에 특수문자가 들어오는 경우")
     void getMemberByUsernameSpecialText() throws Exception{
         // given
         String username = "test!";
@@ -172,7 +172,7 @@ public class MemberControllerTest {
         resultActions.andExpect(jsonPath("code").value(GlobalErrorCode.G0003.name()));
     }
     @Test
-    @DisplayName("username 에 띄어쓰기가 있는 경우")
+    @DisplayName("fail : username 에 띄어쓰기가 있는 경우")
     void getMemberByUsernameSpacingText() throws Exception{
         // given
         String username = "test Test";
@@ -190,7 +190,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("유저정보 수정")
+    @DisplayName("fail : success : 유저정보 수정")
     void patchMember() throws Exception{
 
         // given
@@ -211,7 +211,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("유저정보 수정 - 토큰이 없을 때")
+    @DisplayName("fail : 유저정보 수정 - 토큰이 없을 때")
     void patchMemberNullToken() throws Exception{
 
         // given
@@ -231,7 +231,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("유저정보 수정 - 변경 닉네임이 한 글자로 들어오는 경우")
+    @DisplayName("fail : 유저정보 수정 - 변경 닉네임이 한 글자로 들어오는 경우")
     void patchMemberMinUsername() throws Exception{
 
         // given
@@ -252,7 +252,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("유저정보 수정 - 변경 닉네임이 열한 글자로 들어오는 경우")
+    @DisplayName("fail : 유저정보 수정 - 변경 닉네임이 열한 글자로 들어오는 경우")
     void patchMemberMaxUsername() throws Exception{
 
         // given
@@ -273,7 +273,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("유저정보 수정 - 변경 닉네임에 특수 문자가 들어오는 경우")
+    @DisplayName("fail : 유저정보 수정 - 변경 닉네임에 특수 문자가 들어오는 경우")
     void patchMemberSpecialText() throws Exception{
 
         // given
@@ -294,7 +294,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("유저정보 수정 - 변경 닉네임에 띄어쓰기가 들어오는 경우")
+    @DisplayName("fail : 유저정보 수정 - 변경 닉네임에 띄어쓰기가 들어오는 경우")
     void patchMemberSpacingText() throws Exception{
 
         // given

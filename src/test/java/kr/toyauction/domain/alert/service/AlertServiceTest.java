@@ -43,7 +43,6 @@ public class AlertServiceTest {
         // given
         AlertPostRequest request = AlertPostRequest.builder()
                 .memberId(1L)
-                .title(AlertCode.AC0006.getDescription())
                 .contents(AlertCode.AC0006.getMessage())
                 .alertCode(AlertCode.AC0006)
                 .url(AlertCode.AC0006.getUrl())
@@ -57,7 +56,7 @@ public class AlertServiceTest {
         // then
         assertNotNull(alert.getId());
         assertEquals(request.getMemberId(),alert.getMemberId());
-        assertEquals(request.getTitle(),alert.getTitle());
+        assertEquals(request.getAlertCode().getTitle(),alert.getTitle());
         assertEquals(messageSource.getMessage(request.getContents(),request.getMessageList(), LocaleContextHolder.getLocale()),alert.getContents());
         assertEquals(request.getAlertCode(),alert.getCode());
         assertEquals(request.getUrl(),alert.getUrl());
@@ -71,7 +70,7 @@ public class AlertServiceTest {
         // given
         AlertPostRequest request = AlertPostRequest.builder()
                 .memberId(null)
-                .title(AlertCode.AC0006.getDescription())
+                .title(AlertCode.AC0006.getTitle())
                 .contents(AlertCode.AC0006.getMessage())
                 .alertCode(AlertCode.AC0006)
                 .url(AlertCode.AC0006.getUrl())
@@ -84,23 +83,51 @@ public class AlertServiceTest {
     }
 
     @Test
-    @DisplayName("fail : 알람 저장 - title 이 null 인경우")
+    @DisplayName("fail : 알람 저장 - code 가 null 인경우")
     void alertSaveTitleNull(){
         // given
         AlertPostRequest request = AlertPostRequest.builder()
                 .memberId(1L)
-                .title("")
-                .contents(AlertCode.AC0006.getMessage())
-                .alertCode(AlertCode.AC0006)
-                .url(AlertCode.AC0006.getUrl())
+                .alertCode(null)
                 .remainingTime("680000")
                 .messageList(new Object[]{"경매 물품 이름",10000})
                 .build();
 
         // when
-        alertService.register(request);
-//        assertThrows(DomainValidationException.class, () -> {
-//            alertService.register(request);
-//        });
+        assertThrows(NullPointerException.class, () -> alertService.register(request));
+    }
+
+    @Test
+    @DisplayName("fail : 알람 저장 - url 이 null 인경우")
+    void alertSaveUrlNull(){
+        // given
+        AlertPostRequest request = AlertPostRequest.builder()
+                .memberId(1L)
+                .contents(AlertCode.AC0006.getMessage())
+                .alertCode(AlertCode.AC0006)
+                .url(null)
+                .remainingTime("680000")
+                .messageList(new Object[]{"경매 물품 이름",10000})
+                .build();
+
+        // when
+        assertThrows(DomainValidationException.class, () -> alertService.register(request));
+    }
+
+    @Test
+    @DisplayName("fail : 알람 저장 - url 이 공백 인경우")
+    void alertSaveUrlBlank(){
+        // given
+        AlertPostRequest request = AlertPostRequest.builder()
+                .memberId(1L)
+                .contents(AlertCode.AC0006.getMessage())
+                .alertCode(AlertCode.AC0006)
+                .url("")
+                .remainingTime("680000")
+                .messageList(new Object[]{"경매 물품 이름",10000})
+                .build();
+
+        // when
+        assertThrows(DomainValidationException.class, () -> alertService.register(request));
     }
 }

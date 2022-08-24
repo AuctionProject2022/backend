@@ -22,7 +22,7 @@ public class MemberRepositoryTest {
     MemberRepository memberRepository;
 
     @Test
-    @DisplayName("memberRepository save()")
+    @DisplayName("success : memberRepository save()")
     void save(){
         // given
         Member member = Member.builder()
@@ -48,7 +48,7 @@ public class MemberRepositoryTest {
     }
 
     @Test
-    @DisplayName("memberRepository findByUsername")
+    @DisplayName("success : memberRepository findByUsername")
     void findByUsername(){
         // given
         Member member = Member.builder()
@@ -76,7 +76,7 @@ public class MemberRepositoryTest {
     }
 
     @Test
-    @DisplayName("memberRepository findByPlatformId")
+    @DisplayName("success : memberRepository findByPlatformId")
     void findByPlatformId(){
         // given
         Member member = Member.builder()
@@ -90,7 +90,7 @@ public class MemberRepositoryTest {
         // when
         memberRepository.save(member);
         Member getMember = memberRepository.findByPlatformId("test@test.com")
-                .orElseThrow();;
+                .orElseThrow();
 
         // then
         assertNotNull(getMember.getId());
