@@ -63,7 +63,15 @@ public class BidService {
                 new AlertPublishEvent(saved.getRegisterMemberId()
                         ,AlertCode.AC0003
                         ,AlertCode.AC0003.getMessage()
-                        ,AlertCode.AC0003.getUrl()+saved.getId()
+                        ,AlertCode.AC0003.getUrl()+product.getId()
+                        ,Long.toString(remainingTime.getSeconds())
+                        ,messageList));
+
+        applicationEventPublisher.publishEvent(
+                new AlertPublishEvent(product.getRegisterMemberId()
+                        ,AlertCode.AC0007
+                        ,AlertCode.AC0007.getMessage()
+                        ,AlertCode.AC0007.getUrl()+product.getId()
                         ,Long.toString(remainingTime.getSeconds())
                         ,messageList));
 
