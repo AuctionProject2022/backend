@@ -62,11 +62,11 @@ public class ProductService {
 		Product saved = productRepository.save(product);
 
 		// PRODUCT_THUMBNAIL
-		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
-				.thumbnailImageId(productPostRequest.getThumbnailImageId())
-				.imageIds(productPostRequest.getImageIds())
-				.targetId(saved.getId())
-				.build());
+//		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
+//				.thumbnailImageId(productPostRequest.getThumbnailImageId())
+//				.imageIds(productPostRequest.getImageIds())
+//				.targetId(saved.getId())
+//				.build());
 
 		Duration remainingTime = Duration.between(productPostRequest.getStartSaleDateTime() , productPostRequest.getEndSaleDateTime());
 		Object[] messageList = {saved.getProductName(),saved.getMinBidPrice()};
@@ -74,7 +74,7 @@ public class ProductService {
 				new AlertPublishEvent(saved.getRegisterMemberId()
 						,AlertCode.AC0006
 						,AlertCode.AC0006.getMessage()
-						,AlertCode.AC0006.getUrl()+"/"+saved.getId()
+						,AlertCode.AC0006.getUrl()+saved.getId()
 						,Long.toString(remainingTime.getSeconds())
 						,messageList));
 		return saved;

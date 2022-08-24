@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 public enum AlertCode {
     AC0001("경매 낙찰완료","",""),
     AC0002("경매 낙찰실패","",""),
-    AC0003("경매 입찰 참여 완료","",""),
+    AC0003("입찰 참여 완료","COMPLETED_BIDDING","/products/"),
     AC0004("경매 판매완료","",""),
     AC0005("경매 판매실패","",""),
-    AC0006("판매 등록 완료","AUCTION_SUCCESS","/프론트url")
+    AC0006("판매 등록 완료","AUCTION_SUCCESS","/products/")
     ;
 
     private final String title;
