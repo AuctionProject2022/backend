@@ -38,10 +38,4 @@ public class MemberController {
         return SuccessResponseHelper.success(null);
     }
 
-    @GetMapping("login")
-    public String test() {
-        return "{\n" +
-                "\t\"goolge\" : \"login api test\"\n" +
-                "}";
-    }
 }

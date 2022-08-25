@@ -65,4 +65,4 @@ jwt:
 
 social:
   login:
-    redirect_url : https://api.toyauction.kr/login?token=
+    redirect_url : http://localhost:3000/login?token=
