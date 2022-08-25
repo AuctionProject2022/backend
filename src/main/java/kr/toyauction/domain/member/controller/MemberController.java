@@ -11,6 +11,7 @@ import kr.toyauction.global.property.Regex;
 import kr.toyauction.global.property.Url;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,5 +36,12 @@ public class MemberController {
     public SuccessResponse<String> patchMember(@Validated @RequestBody final MemberPatchRequest request, VerifyMember verifyMember) {
         memberService.patchMember(verifyMember.getId(),request);
         return SuccessResponseHelper.success(null);
+    }
+
+    @GetMapping("login")
+    public String test() {
+        return "{\n" +
+                "\t\"goolge\" : \"login api test\"\n" +
+                "}";
     }
 }
