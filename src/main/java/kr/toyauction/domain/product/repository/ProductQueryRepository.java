@@ -35,13 +35,14 @@ public class ProductQueryRepository extends ProductQuerySupport {
                         product.id,
                         product.productName,
                         bid.bidPrice.max().as("maxBidPrice"),
+                        product.rightPrice,
                         product.minBidPrice,
                         product.unitPrice,
-                        product.rightPrice,
                         product.endSaleDateTime
                 ))
                 .from(product)
                 .leftJoin(bid).on(product.id.eq(bid.product.id))
+                .where(where(productGetRequest))
                 .groupBy(
                         product.id,
                         product.productName,
@@ -50,6 +51,7 @@ public class ProductQueryRepository extends ProductQuerySupport {
                         product.rightPrice,
                         product.endSaleDateTime
                 )
+                .having(having(productGetRequest))
                 .orderBy(ORDERS.stream().toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
