@@ -7,6 +7,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -29,7 +30,7 @@ public class AlertPublishEvent {
 	@NotBlank
 	private String url;
 
-	private String remainingTime;
+	private LocalDateTime endDatetime;
 
 	private Object[] messageList;
 }

@@ -17,6 +17,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -46,7 +48,7 @@ public class AlertServiceTest {
                 .contents(AlertCode.AC0006.getMessage())
                 .alertCode(AlertCode.AC0006)
                 .url(AlertCode.AC0006.getUrl())
-                .remainingTime("680000")
+                .endDatetime(LocalDateTime.now())
                 .messageList(new Object[]{"경매 물품 이름",10000})
                 .build();
 
@@ -61,7 +63,7 @@ public class AlertServiceTest {
         assertEquals(request.getAlertCode(),alert.getCode());
         assertEquals(request.getUrl(),alert.getUrl());
         assertFalse(alert.isAlertRead());
-        assertEquals(request.getRemainingTime(),alert.getRemainingTime());
+        assertEquals(request.getEndDatetime(),alert.getEndDatetime());
     }
 
     @Test
@@ -74,7 +76,7 @@ public class AlertServiceTest {
                 .contents(AlertCode.AC0006.getMessage())
                 .alertCode(AlertCode.AC0006)
                 .url(AlertCode.AC0006.getUrl())
-                .remainingTime("680000")
+                .endDatetime(LocalDateTime.now())
                 .messageList(new Object[]{"경매 물품 이름",10000})
                 .build();
 
@@ -89,7 +91,7 @@ public class AlertServiceTest {
         AlertPostRequest request = AlertPostRequest.builder()
                 .memberId(1L)
                 .alertCode(null)
-                .remainingTime("680000")
+                .endDatetime(LocalDateTime.now())
                 .messageList(new Object[]{"경매 물품 이름",10000})
                 .build();
 
@@ -106,7 +108,7 @@ public class AlertServiceTest {
                 .contents(AlertCode.AC0006.getMessage())
                 .alertCode(AlertCode.AC0006)
                 .url(null)
-                .remainingTime("680000")
+                .endDatetime(LocalDateTime.now())
                 .messageList(new Object[]{"경매 물품 이름",10000})
                 .build();
 
@@ -123,7 +125,7 @@ public class AlertServiceTest {
                 .contents(AlertCode.AC0006.getMessage())
                 .alertCode(AlertCode.AC0006)
                 .url("")
-                .remainingTime("680000")
+                .endDatetime(LocalDateTime.now())
                 .messageList(new Object[]{"경매 물품 이름",10000})
                 .build();
 

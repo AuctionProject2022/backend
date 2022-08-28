@@ -57,14 +57,13 @@ public class BidService {
 
         Bid saved = bidRepository.save(bid);
 
-        Duration remainingTime = Duration.between(saved.getCreateDatetime(), product.getEndSaleDateTime());
         Object[] messageList = {product.getProductName(),saved.getBidPrice()};
         applicationEventPublisher.publishEvent(
                 new AlertPublishEvent(saved.getRegisterMemberId()
                         ,AlertCode.AC0003
                         ,AlertCode.AC0003.getMessage()
                         ,AlertCode.AC0003.getUrl()+product.getId()
-                        ,Long.toString(remainingTime.getSeconds())
+                        ,product.getEndSaleDateTime()
                         ,messageList));
 
         applicationEventPublisher.publishEvent(
@@ -72,7 +71,7 @@ public class BidService {
                         ,AlertCode.AC0007
                         ,AlertCode.AC0007.getMessage()
                         ,AlertCode.AC0007.getUrl()+product.getId()
-                        ,Long.toString(remainingTime.getSeconds())
+                        ,product.getEndSaleDateTime()
                         ,messageList));
 
         return saved;

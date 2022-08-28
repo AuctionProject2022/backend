@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Getter
@@ -41,7 +42,7 @@ public class Alert extends BaseEntity implements EntitySupport {
 	@Column(nullable = false)
 	private boolean alertRead;
 
-	private String remainingTime;
+	private LocalDateTime endDatetime;
 
 	@Override
 	public void validation() {

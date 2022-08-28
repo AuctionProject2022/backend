@@ -20,7 +20,7 @@ public class AlertConverter {
 				.alertCode(alertPublishEvent.getAlertCode())
 				.contents(alertPublishEvent.getMessage())
 				.url(alertPublishEvent.getUrl())
-				.remainingTime(alertPublishEvent.getRemainingTime())
+				.endDatetime(alertPublishEvent.getEndDatetime())
 				.messageList(alertPublishEvent.getMessageList())
 				.build();
 	}

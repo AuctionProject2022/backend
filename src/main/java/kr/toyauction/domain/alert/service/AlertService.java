@@ -28,7 +28,7 @@ public class AlertService {
 				.contents(messageSource.getMessage(alertPostRequest.getContents(),alertPostRequest.getMessageList(), LocaleContextHolder.getLocale()))
 				.code(alertPostRequest.getAlertCode())
 				.url(alertPostRequest.getUrl())
-				.remainingTime(alertPostRequest.getRemainingTime())
+				.endDatetime(alertPostRequest.getEndDatetime())
 				.build();
 		alert.validation();
 		return alertRepository.save(alert);

@@ -68,14 +68,13 @@ public class ProductService {
 //				.targetId(saved.getId())
 //				.build());
 
-		Duration remainingTime = Duration.between(productPostRequest.getStartSaleDateTime() , productPostRequest.getEndSaleDateTime());
 		Object[] messageList = {saved.getProductName(),saved.getMinBidPrice()};
 		applicationEventPublisher.publishEvent(
 				new AlertPublishEvent(saved.getRegisterMemberId()
 						,AlertCode.AC0006
 						,AlertCode.AC0006.getMessage()
 						,AlertCode.AC0006.getUrl()+saved.getId()
-						,Long.toString(remainingTime.getSeconds())
+						,saved.getEndSaleDateTime()
 						,messageList));
 		return saved;
 	}
