@@ -130,6 +130,18 @@ class AlertControllerTest {
 		resultActions.andExpect(status().isOk());
 		resultActions.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
 	}
+	@Test
+	@DisplayName("fail : 알림 목록 조회 - 토큰이 없을 때")
+	void getAlertsNullToken() throws Exception {
+		//give
+
+		//when
+		ResultActions resultActions = mockMvc.perform(get(Url.ALERT)
+						.contentType(MediaType.APPLICATION_JSON_VALUE));
+
+		// then
+		resultActions.andExpect(status().isUnauthorized());
+	}
 
 	@Test
 	@DisplayName("success : 알림 확인")
