@@ -213,4 +213,46 @@ public class AlertServiceTest {
         // when
         assertThrows(DomainNotFoundException.class, () -> alertService.alertCheck(AlertId));
     }
+
+    @Test
+    @DisplayName("success : 알람목록 확인")
+    void alertUnreadCheck(){
+        // given
+        Alert alert = Alert.builder()
+                .id(1L)
+                .memberId(1L)
+                .title("제목")
+                .contents("내용")
+                .code(AlertCode.AC0007)
+                .url("/products/1")
+                .alertRead(false)
+                .endDatetime(LocalDateTime.now())
+                .build();
+        Alert save = alertRepository.save(alert);
+        Long MemberId = save.getMemberId();
+
+        // when
+        alertService.alertUnreadCheck(MemberId);
+    }
+
+    @Test
+    @DisplayName("fail : 알람목록 확인 - 다 읽었을 때")
+    void alertUnreadCheckNone(){
+        // given
+        Alert alert = Alert.builder()
+                .id(1L)
+                .memberId(Long.MAX_VALUE)
+                .title("제목")
+                .contents("내용")
+                .code(AlertCode.AC0007)
+                .url("/products/1")
+                .alertRead(true)
+                .endDatetime(LocalDateTime.now())
+                .build();
+        Alert save = alertRepository.save(alert);
+        Long MemberId = save.getMemberId();
+
+        // when
+        assertThrows(DomainNotFoundException.class, () -> alertService.alertUnreadCheck(MemberId));
+    }
 }

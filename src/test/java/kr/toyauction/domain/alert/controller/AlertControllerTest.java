@@ -178,7 +178,7 @@ class AlertControllerTest {
 	}
 
 	@Test
-	@DisplayName("success : 읽지 않은 알람 - 있을 때")
+	@DisplayName("success : 읽지 않은 알람")
 	void getAlertUnreadCheck() throws Exception {
 
 		mockMvc.perform(get(Url.ALERT + "/unread-check")
@@ -194,6 +194,16 @@ class AlertControllerTest {
 								fieldWithPath("success").description("성공 여부")
 						)
 				));
+	}
+
+	@Test
+	@DisplayName("fail : 읽지 않은 알람 - 토큰이 없을 때")
+	void getAlertUnreadCheckNone() throws Exception {
+
+		ResultActions resultActions = mockMvc.perform(get(Url.ALERT + "/unread-check")
+						.contentType(MediaType.APPLICATION_JSON_VALUE));
+
+		resultActions.andExpect(status().isUnauthorized());
 	}
 
 }
