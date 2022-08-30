@@ -149,6 +149,7 @@ class AlertControllerTest {
 
 		Long alertId = 125L;
 		mockMvc.perform(post(Url.ALERT + "/{alertId}", alertId)
+						.header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
 						.contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andDo(print())
 				.andExpect(status().isOk())
