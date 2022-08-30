@@ -1,18 +1,22 @@
 package kr.toyauction.domain.member.service;
 
 import kr.toyauction.domain.member.dto.MemberPatchRequest;
+import kr.toyauction.domain.member.dto.MemberPatchResponse;
 import kr.toyauction.domain.member.entity.Member;
 import kr.toyauction.domain.member.entity.Platform;
 import kr.toyauction.domain.member.entity.Role;
 import kr.toyauction.domain.member.repository.MemberRepository;
 import kr.toyauction.global.exception.DomainNotFoundException;
 import kr.toyauction.global.exception.OverlapException;
+import kr.toyauction.global.token.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
@@ -27,10 +31,12 @@ public class MemberServiceTest {
     MemberRepository memberRepository;
 
     MemberService memberService;
+    @Mock
+    JwtProvider jwtProvider;
 
     @BeforeEach
     void setUp() {
-        this.memberService = new MemberService(memberRepository);
+        this.memberService = new MemberService(memberRepository,jwtProvider);
     }
 
     @Test

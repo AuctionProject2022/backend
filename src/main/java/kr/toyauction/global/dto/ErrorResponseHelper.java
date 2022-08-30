@@ -8,7 +8,9 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +25,19 @@ public class ErrorResponseHelper {
         return ResponseEntity
                 .status(errorCode.status())
                 .body(new ErrorResponse(errorCode.name(), errorMessage));
+    }
+
+    public ResponseEntity<ErrorResponse> overlapError(ErrorCode errorCode, FieldError fieldError) {
+        String errorMessage = messageSource.getMessage(errorCode.name(), null, LocaleContextHolder.getLocale());
+
+        FieldErrorResponse response = new FieldErrorResponse(fieldError,fieldError.getDefaultMessage());
+        response.setCode("overlap");
+        List<FieldErrorResponse> responseList = new ArrayList<>();
+        responseList.add(response);
+
+        return ResponseEntity
+                .status(errorCode.status())
+                .body(new ErrorResponse(errorCode.name(), errorMessage,responseList));
     }
 
     public ResponseEntity<ErrorResponse> bindErrors(Errors errors) {

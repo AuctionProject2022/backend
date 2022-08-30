@@ -33,9 +33,8 @@ public class MemberController {
 
     @PatchMapping(Url.MEMBER)
     @PreAuthorize("hasRole('USER')")
-    public SuccessResponse<String> patchMember(@Validated @RequestBody final MemberPatchRequest request, VerifyMember verifyMember) {
-        memberService.patchMember(verifyMember.getId(),request);
-        return SuccessResponseHelper.success(null);
+    public SuccessResponse<MemberPatchResponse> patchMember(@Validated @RequestBody final MemberPatchRequest request, VerifyMember verifyMember) {
+        return SuccessResponseHelper.success(memberService.patchMember(verifyMember.getId(),request));
     }
 
 }
