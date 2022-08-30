@@ -389,3 +389,9 @@ operation::get-alerts[snippets='http-request,http-response,response-fields']
 알림 확인을 통해 읽음 처리를 할 수 있다.
 
 operation::post-alert[snippets='path-parameters,http-request,http-response,response-fields']
+
+=== 읽지 않은 알림
+
+알림 확인을 통해 읽음 처리를 할 수 있다.
+
+operation::get-alert-unread-check[snippets='http-request,http-response,response-fields']

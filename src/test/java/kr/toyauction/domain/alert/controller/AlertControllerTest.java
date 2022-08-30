@@ -177,4 +177,23 @@ class AlertControllerTest {
 		resultActions.andExpect(status().isUnauthorized());
 	}
 
+	@Test
+	@DisplayName("success : 읽지 않은 알람 - 있을 때")
+	void getAlertUnreadCheck() throws Exception {
+
+		mockMvc.perform(get(Url.ALERT + "/unread-check")
+						.header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
+						.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andDo(document("get-alert-unread-check",
+						responseHeaders(
+								headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type")
+						),
+						relaxedResponseFields(
+								fieldWithPath("success").description("성공 여부")
+						)
+				));
+	}
+
 }
