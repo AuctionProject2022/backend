@@ -52,4 +52,10 @@ public class AlertService {
 		alert.setAlertRead(true);
 		return null;
 	}
+
+	public String alertUnreadCheck(Long memberId){
+		alertRepository.findTop1ByMemberIdAndAlertRead(memberId,false)
+				.orElseThrow(DomainNotFoundException::new);
+		return null;
+	}
 }

@@ -36,4 +36,10 @@ public class AlertController {
     public SuccessResponse<String> alertCheck(@PathVariable final Long alertId){
         return SuccessResponseHelper.success(alertService.alertCheck(alertId));
     }
+
+    @GetMapping(Url.ALERT +"/unread-check")
+    @PreAuthorize("hasRole('USER')")
+    public SuccessResponse<String> alertUnreadCheck(VerifyMember verifyMember){
+        return SuccessResponseHelper.success(alertService.alertUnreadCheck(verifyMember.getId()));
+    }
 }
