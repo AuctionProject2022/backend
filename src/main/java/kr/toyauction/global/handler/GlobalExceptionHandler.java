@@ -14,6 +14,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,7 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(OverlapException.class)
     public ResponseEntity<ErrorResponse> handleOverlapException(OverlapException e) {
         log.error("OverlapException : ", e);
-        return errorResponseHelper.code(GlobalErrorCode.G0009);
+        return errorResponseHelper.overlapError(GlobalErrorCode.G0001,e.getError());
     }
 
     @ExceptionHandler(WrongValueException.class)
