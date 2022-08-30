@@ -62,4 +62,8 @@ public class Alert extends BaseEntity implements EntitySupport {
 			throw new DomainValidationException();
 		}
 	}
+
+	public void setAlertRead(boolean alertRead) {
+		this.alertRead = alertRead;
+	}
 }

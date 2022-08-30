@@ -32,9 +32,7 @@ public class AlertController {
     }
 
     @PostMapping(Url.ALERT +"/{alertId}")
-    public String getAlert(@PathVariable final Long alertId){
-        return "{\n" +
-                "\t\"success\" : true\n" +
-                "}";
+    public SuccessResponse<String> getAlert(@PathVariable final Long alertId){
+        return SuccessResponseHelper.success(alertService.getAlert(alertId));
     }
 }

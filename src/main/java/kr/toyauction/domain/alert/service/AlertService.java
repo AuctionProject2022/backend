@@ -4,6 +4,7 @@ import kr.toyauction.domain.alert.dto.AlertGetResponse;
 import kr.toyauction.domain.alert.dto.AlertPostRequest;
 import kr.toyauction.domain.alert.entity.Alert;
 import kr.toyauction.domain.alert.repository.AlertRepository;
+import kr.toyauction.global.exception.DomainNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -42,5 +43,13 @@ public class AlertService {
 
 	public Page<AlertGetResponse> getAlerts(Long memberId, Pageable pageable){
 		return alertRepository.findByMemberId(memberId,pageable).map(AlertGetResponse::new);
+	}
+
+	@Transactional
+	public String getAlert(Long alertId){
+		Alert alert = alertRepository.findById(alertId)
+				.orElseThrow(DomainNotFoundException::new);
+		alert.setAlertRead(true);
+		return null;
 	}
 }
