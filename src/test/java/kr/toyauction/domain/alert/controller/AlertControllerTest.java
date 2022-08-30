@@ -26,6 +26,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,6 +49,7 @@ class AlertControllerTest {
 								.operationPreprocessors()
 								.withRequestDefaults(prettyPrint())
 								.withResponseDefaults(prettyPrint()))
+				.apply(springSecurity())
 				.build();
 	}
 
@@ -56,6 +58,7 @@ class AlertControllerTest {
 	@DisplayName("success : 알림 목록 조회")
 	void getAlerts() throws Exception {
 		mockMvc.perform(get(Url.ALERT)
+						.header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
 						.contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andDo(print())
 				.andExpect(status().isOk())

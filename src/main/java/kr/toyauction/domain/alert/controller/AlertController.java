@@ -1,5 +1,6 @@
 package kr.toyauction.domain.alert.controller;
 
+import kr.toyauction.domain.alert.dto.AlertGetResponse;
 import kr.toyauction.domain.alert.entity.Alert;
 import kr.toyauction.domain.alert.service.AlertService;
 import kr.toyauction.global.dto.VerifyMember;
@@ -24,7 +25,7 @@ public class AlertController {
 
     @GetMapping(value= Url.ALERT, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('USER')")
-    public Page<Alert> getAlerts(Pageable pageable, VerifyMember verifyMember){
+    public Page<AlertGetResponse> getAlerts(Pageable pageable, VerifyMember verifyMember){
         return alertService.getAlerts(verifyMember.getId(),pageable);
     }
 
