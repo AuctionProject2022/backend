@@ -33,7 +33,7 @@ public class AlertController {
 
     @PostMapping(Url.ALERT +"/{alertId}")
     @PreAuthorize("hasRole('USER')")
-    public SuccessResponse<String> getAlert(@PathVariable final Long alertId){
-        return SuccessResponseHelper.success(alertService.getAlert(alertId));
+    public SuccessResponse<String> alertCheck(@PathVariable final Long alertId){
+        return SuccessResponseHelper.success(alertService.alertCheck(alertId));
     }
 }

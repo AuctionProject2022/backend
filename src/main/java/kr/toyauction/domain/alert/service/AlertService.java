@@ -46,7 +46,7 @@ public class AlertService {
 	}
 
 	@Transactional
-	public String getAlert(Long alertId){
+	public String alertCheck(Long alertId){
 		Alert alert = alertRepository.findById(alertId)
 				.orElseThrow(DomainNotFoundException::new);
 		alert.setAlertRead(true);

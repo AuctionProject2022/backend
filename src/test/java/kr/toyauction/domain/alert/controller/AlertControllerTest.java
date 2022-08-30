@@ -166,4 +166,15 @@ class AlertControllerTest {
 				));
 	}
 
+	@Test
+	@DisplayName("fail : 알림 확인 - 토큰이 없을 때")
+	void postAlertNullToken() throws Exception {
+
+		Long alertId = 125L;
+		ResultActions resultActions = mockMvc.perform(post(Url.ALERT + "/{alertId}", alertId)
+						.contentType(MediaType.APPLICATION_JSON_VALUE));
+
+		resultActions.andExpect(status().isUnauthorized());
+	}
+
 }

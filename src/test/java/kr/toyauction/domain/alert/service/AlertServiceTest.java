@@ -5,6 +5,7 @@ import kr.toyauction.domain.alert.dto.AlertPostRequest;
 import kr.toyauction.domain.alert.entity.Alert;
 import kr.toyauction.domain.alert.repository.AlertRepository;
 import kr.toyauction.global.entity.AlertCode;
+import kr.toyauction.global.exception.DomainNotFoundException;
 import kr.toyauction.global.exception.DomainValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -141,7 +142,7 @@ public class AlertServiceTest {
 
     @Test
     @DisplayName("success : 알람목록 조회")
-    void getAlert(){
+    void getAlerts(){
         // given
         Alert alert = Alert.builder()
                 .id(1L)
@@ -167,5 +168,49 @@ public class AlertServiceTest {
         assertEquals(alert.getUrl(),result.getContent().get(0).getUrl());
         assertEquals(alert.isAlertRead(),result.getContent().get(0).isAlertRead());
         assertEquals(alert.getEndDatetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), result.getContent().get(0).getEndDateTime());
+    }
+
+    @Test
+    @DisplayName("success : 알람목록 확인")
+    void alertCheck(){
+        // given
+        Alert alert = Alert.builder()
+                .id(1L)
+                .memberId(1L)
+                .title("제목")
+                .contents("내용")
+                .code(AlertCode.AC0007)
+                .url("/products/1")
+                .alertRead(false)
+                .endDatetime(LocalDateTime.now())
+                .build();
+        Alert save = alertRepository.save(alert);
+        Long AlertId = save.getId();
+
+        // when
+        alertService.alertCheck(AlertId);
+
+        // then
+    }
+
+    @Test
+    @DisplayName("fail : 알람목록 확인 - 없는 알람 아이디")
+    void alertCheckNullId(){
+        // given
+        Alert alert = Alert.builder()
+                .id(1L)
+                .memberId(1L)
+                .title("제목")
+                .contents("내용")
+                .code(AlertCode.AC0007)
+                .url("/products/1")
+                .alertRead(false)
+                .endDatetime(LocalDateTime.now())
+                .build();
+        alertRepository.save(alert);
+        Long AlertId = Long.MAX_VALUE;
+
+        // when
+        assertThrows(DomainNotFoundException.class, () -> alertService.alertCheck(AlertId));
     }
 }
