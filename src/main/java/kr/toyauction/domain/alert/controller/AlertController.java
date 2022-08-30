@@ -3,6 +3,8 @@ package kr.toyauction.domain.alert.controller;
 import kr.toyauction.domain.alert.dto.AlertGetResponse;
 import kr.toyauction.domain.alert.entity.Alert;
 import kr.toyauction.domain.alert.service.AlertService;
+import kr.toyauction.global.dto.SuccessResponse;
+import kr.toyauction.global.dto.SuccessResponseHelper;
 import kr.toyauction.global.dto.VerifyMember;
 import kr.toyauction.global.property.Url;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +27,8 @@ public class AlertController {
 
     @GetMapping(value= Url.ALERT, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('USER')")
-    public Page<AlertGetResponse> getAlerts(Pageable pageable, VerifyMember verifyMember){
-        return alertService.getAlerts(verifyMember.getId(),pageable);
+    public SuccessResponse<Page<AlertGetResponse>> getAlerts(Pageable pageable, VerifyMember verifyMember){
+        return SuccessResponseHelper.success(alertService.getAlerts(verifyMember.getId(),pageable));
     }
 
     @PostMapping(Url.ALERT +"/{alertId}")

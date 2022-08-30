@@ -261,7 +261,8 @@ Location: https://toyauction.kr/login?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 
 === Example jwt
 
-```HEADER
+```
+HEADER
 {
   "alg": "HS512"
 }
@@ -339,7 +340,49 @@ operation::post-file[snippets='http-request,http-response,response-fields']
 
 알림 목록을 조회할 수 있다.
 
+==== parameter
+
+|===
+| parameter | Description | default
+
+| page
+| 페이지
+| 0
+
+| size
+| 사이즈
+| 20
+|===
+
 operation::get-alerts[snippets='http-request,http-response,response-fields']
+
+
+==== 알람 코드
+
+|===
+| CODE | Description
+
+| AC0001
+| 경매 낙찰완료
+
+| AC0002
+| 경매 낙찰실패
+
+| AC0003
+| 입찰 참여 완료
+
+| AC0004
+| 경매 판매완료
+
+| AC0005
+| 경매 판매실패
+
+| AC0006
+| 판매 등록 완료
+
+| AC0007
+| 누군가 내상품 입찰
+|===
 
 === 알림 확인
 

@@ -12,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 @Setter
 public class AlertGetResponse {
     private Long alertId;
-    private Long memberId;
     private String createDatetime;
     private String endDateTime;
     private String title;
@@ -23,7 +22,6 @@ public class AlertGetResponse {
 
     public AlertGetResponse(Alert alert) {
         this.alertId = alert.getId();
-        this.memberId = alert.getMemberId();
         this.createDatetime = alert.getCreateDatetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.endDateTime = alert.getEndDatetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         this.title = alert.getTitle();
