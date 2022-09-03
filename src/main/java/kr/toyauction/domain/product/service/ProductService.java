@@ -1,9 +1,12 @@
 package kr.toyauction.domain.product.service;
 
 
+import kr.toyauction.domain.image.entity.ImageEntity;
+import kr.toyauction.domain.image.repository.ImageRepository;
 import kr.toyauction.domain.product.dto.ProductGetRequest;
 import kr.toyauction.domain.product.dto.ProductGetResponse;
 import kr.toyauction.domain.product.dto.ProductPostRequest;
+import kr.toyauction.domain.product.dto.ProductViewResponse;
 import kr.toyauction.domain.product.entity.Product;
 import kr.toyauction.domain.product.entity.ProductStatus;
 import kr.toyauction.domain.product.repository.ProductQueryRepository;
@@ -21,13 +24,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
 
 	private final ProductRepository productRepository;
+	private final ImageRepository imageRepository;
 	private final ProductQueryRepository productQueryRepository;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -53,7 +57,7 @@ public class ProductService {
 				.exchangeType(productPostRequest.getExchangeType())
 				.productCondition(productPostRequest.getProductCondition())
 				.detail(productPostRequest.getDetail())
-				.registerMemberId(1) //임시로 registerId 임의값
+				.registerMemberId(1L) //임시로 registerId 임의값
 				.productStatus(ProductStatus.ON_SALE)
 				.build();
 
@@ -62,11 +66,11 @@ public class ProductService {
 		Product saved = productRepository.save(product);
 
 		// PRODUCT_THUMBNAIL
-//		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
-//				.thumbnailImageId(productPostRequest.getThumbnailImageId())
-//				.imageIds(productPostRequest.getImageIds())
-//				.targetId(saved.getId())
-//				.build());
+		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
+				.thumbnailImageId(productPostRequest.getThumbnailImageId())
+				.imageIds(productPostRequest.getImageIds())
+				.targetId(saved.getId())
+				.build());
 
 		Duration remainingTime = Duration.between(productPostRequest.getStartSaleDateTime() , productPostRequest.getEndSaleDateTime());
 		Object[] messageList = {saved.getProductName(),saved.getMinBidPrice()};
@@ -80,11 +84,17 @@ public class ProductService {
 		return saved;
 	}
 
-
 	@Transactional(readOnly = true)
-	public Product getProduct(Long productId) {
-		return this.productRepository.findById(productId)
-				.orElseThrow(() -> new DomainNotFoundException(productId));
+	public ProductViewResponse getProduct(Long productId) {
+
+		Product product = this.productRepository.findById(productId).orElseThrow(() -> new DomainNotFoundException(productId));
+		ProductViewResponse productViewResponse = new ProductViewResponse(product);
+		productViewResponse.setBids(product.getBids());
+		List<ImageEntity> image = this.imageRepository.findAllByTargetId(productId);
+		productViewResponse.setImages(image);
+
+		return productViewResponse;
+
 	}
 
 	@Transactional(readOnly = true)

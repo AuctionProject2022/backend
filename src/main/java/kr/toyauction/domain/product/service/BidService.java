@@ -30,7 +30,7 @@ public class BidService {
     public Bid registerBid(final Long productId, @NonNull final BidPostRequest bidPostRequest) {
 
         //입찰할 상품 있는지 확인
-        Product product = productRepository.getById(productId);
+        Product product = productRepository.findById(productId).orElseThrow();
 
         //상품 입찰시 바로 구매가 보다 높게 입력한 경우 exception 을 발생 시킨다.
         if(bidPostRequest.getBidPrice() > product.getRightPrice() ){
@@ -43,7 +43,7 @@ public class BidService {
         }
 
         //상품 입찰시 최소 입찰가보다 낮은 금액으로 입찰할 수 없다.
-        if(bidPostRequest.getBidPrice() > product.getMinBidPrice()){
+        if(bidPostRequest.getBidPrice() < product.getMinBidPrice()){
             throw new DomainValidationException();
         }
 

@@ -1,13 +1,11 @@
 package kr.toyauction.domain.product.entity;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import kr.toyauction.global.entity.CodeEnum;
 
-public enum PurchaseTime {
+public enum PurchaseTime implements CodeEnum {
     SIX_MONTHS("6개월 이내"),
     ONE_TO_TWO_YEARS("1~2년 이내"),
     TWO_YEARS_OVER("2년 이상");
-    // NO_REMEMBER("기억안남");
 
     private final String description;
 
@@ -15,4 +13,13 @@ public enum PurchaseTime {
         this.description = description;
     }
 
+    @Override
+    public String getCode() {
+        return name();
+    }
+
+    @Override
+    public String getValue() {
+        return description;
+    }
 }
