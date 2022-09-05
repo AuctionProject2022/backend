@@ -1,16 +1,14 @@
 package kr.toyauction.domain.product.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
 import kr.toyauction.domain.image.dto.ImageDto;
 import kr.toyauction.domain.image.entity.ImageEntity;
 import kr.toyauction.domain.product.entity.*;
-import kr.toyauction.global.dto.EnumDto;
+import kr.toyauction.global.dto.EnumCodeValue;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,11 +26,11 @@ public class ProductViewResponse {
     private LocalDateTime startSaleDateTime;
     private LocalDateTime endSaleDateTime;
     private Integer unitPrice;
-    private EnumDto purchaseTime;
-    private EnumDto deliveryOption;
-    private EnumDto exchangeType;
-    private EnumDto productCondition;
-    private EnumDto productStatus;
+    private EnumCodeValue purchaseTime;
+    private EnumCodeValue deliveryOption;
+    private EnumCodeValue exchangeType;
+    private EnumCodeValue productCondition;
+    private EnumCodeValue productStatus;
     private String detail;
     private List<BidPostResponse> bids;
 
@@ -43,11 +41,11 @@ public class ProductViewResponse {
         this.startSaleDateTime = product.getStartSaleDateTime();
         this.endSaleDateTime = product.getEndSaleDateTime();
         this.unitPrice = product.getUnitPrice();
-        this.purchaseTime =new EnumDto(product.getPurchaseTime());
-        this.deliveryOption = new EnumDto(product.getDeliveryOption());
-        this.exchangeType = new EnumDto(product.getExchangeType());
-        this.productCondition = new EnumDto(product.getProductCondition());
-        this.productStatus = new EnumDto(product.getProductStatus());
+        this.purchaseTime =new EnumCodeValue(product.getPurchaseTime());
+        this.deliveryOption = new EnumCodeValue(product.getDeliveryOption());
+        this.exchangeType = new EnumCodeValue(product.getExchangeType());
+        this.productCondition = new EnumCodeValue(product.getProductCondition());
+        this.productStatus = new EnumCodeValue(product.getProductStatus());
         this.detail = product.getDetail();
     }
 

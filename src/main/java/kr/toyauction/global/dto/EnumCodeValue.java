@@ -6,11 +6,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EnumDto {
+public class EnumCodeValue {
     private String code;
     private String value;
 
-    public EnumDto(CodeEnum codeEnum){
+    public EnumCodeValue(CodeEnum codeEnum){
         this.code = codeEnum.getCode();
         this.value = codeEnum.getValue();
     }
