@@ -36,7 +36,7 @@ public class ProductService {
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 	@Transactional
-	public Product save(@NonNull final ProductPostRequest productPostRequest) {
+	public Product save(@NonNull final ProductPostRequest productPostRequest, Long memberId) {
 
 		//상품 설명 텍스트 입력시 자바스크립트 삽입 공격 방지
 		productPostRequest.getDetail()
@@ -57,7 +57,7 @@ public class ProductService {
 				.exchangeType(productPostRequest.getExchangeType())
 				.productCondition(productPostRequest.getProductCondition())
 				.detail(productPostRequest.getDetail())
-				.registerMemberId(1L) //임시로 registerId 임의값
+				.registerMemberId(memberId) //임시로 registerId 임의값
 				.productStatus(ProductStatus.ON_SALE)
 				.build();
 

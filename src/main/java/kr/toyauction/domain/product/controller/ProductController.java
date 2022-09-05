@@ -9,12 +9,14 @@ import kr.toyauction.domain.product.service.BidService;
 import kr.toyauction.domain.product.service.ProductService;
 import kr.toyauction.global.dto.SuccessResponse;
 import kr.toyauction.global.dto.SuccessResponseHelper;
+import kr.toyauction.global.dto.VerifyMember;
 import kr.toyauction.global.property.Url;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,8 +44,9 @@ public class ProductController {
 	}
 
 	@PostMapping(value = Url.PRODUCT , produces = MediaType.APPLICATION_JSON_VALUE)
-	public SuccessResponse<ProductPostResponse> postProduct(@Validated @RequestBody final ProductPostRequest request) {
-		Product product = productService.save(request);
+	@PreAuthorize("hasRole('USER')")
+	public SuccessResponse<ProductPostResponse> postProduct(@Validated @RequestBody final ProductPostRequest request, VerifyMember verifyMember) {
+		Product product = productService.save(request, verifyMember.getId());
 		return SuccessResponseHelper.success(new ProductPostResponse(product));
 	}
 
