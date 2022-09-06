@@ -11,6 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -29,15 +30,15 @@ public class Product extends BaseEntity implements EntitySupport {
 
     private String productName;
 
-    private int minBidPrice;
+    private Integer minBidPrice;
 
-    private int rightPrice;
+    private Integer rightPrice;
 
     private LocalDateTime startSaleDateTime;
 
     private LocalDateTime endSaleDateTime;
 
-    private int unitPrice;
+    private Integer unitPrice;
     
     @Enumerated(EnumType.STRING)
 	private PurchaseTime purchaseTime;
@@ -53,11 +54,14 @@ public class Product extends BaseEntity implements EntitySupport {
 
     @Column(length = 4000)
     private String detail;
-    
-    private long registerMemberId;
+
+    private Long registerMemberId;
     
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
+
+    @OneToMany(mappedBy = "product")
+    private List<Bid> bids;
 
     @Override
     public void validation() {

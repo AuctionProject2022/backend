@@ -3,9 +3,7 @@ package kr.toyauction.domain.product.repository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.toyauction.domain.product.dto.ProductGetRequest;
-import kr.toyauction.domain.product.dto.ProductGetResponse;
-import kr.toyauction.domain.product.dto.QProductGetResponse;
+import kr.toyauction.domain.product.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -58,6 +56,4 @@ public class ProductQueryRepository extends ProductQuerySupport {
 
         return PageableExecutionUtils.getPage(jpaQuery.fetch(), pageable, jpaQuery::fetchCount);
     }
-
-
 }
