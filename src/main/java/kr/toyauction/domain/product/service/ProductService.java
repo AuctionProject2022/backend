@@ -100,4 +100,8 @@ public class ProductService {
 	public Page<ProductGetResponse> pageProduct(@NonNull final Pageable pageable, final ProductGetRequest productGetRequest) {
 		return this.productQueryRepository.page(pageable, productGetRequest);
 	}
+
+	public List<Product> getAutoCompleteProduct(String productName) {
+		return this.productRepository.findTop10ByProductNameContainsOrderByIdDesc(productName);
+	}
 }
