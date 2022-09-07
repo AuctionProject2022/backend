@@ -15,6 +15,7 @@ import kr.toyauction.global.entity.AlertCode;
 import kr.toyauction.global.event.AlertPublishEvent;
 import kr.toyauction.global.event.ImageProductEvent;
 import kr.toyauction.global.exception.DomainNotFoundException;
+import kr.toyauction.global.exception.NoAuthorityException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -66,11 +68,11 @@ public class ProductService {
 		Product saved = productRepository.save(product);
 
 		// PRODUCT_THUMBNAIL
-		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
-				.thumbnailImageId(productPostRequest.getThumbnailImageId())
-				.imageIds(productPostRequest.getImageIds())
-				.targetId(saved.getId())
-				.build());
+//		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
+//				.thumbnailImageId(productPostRequest.getThumbnailImageId())
+//				.imageIds(productPostRequest.getImageIds())
+//				.targetId(saved.getId())
+//				.build());
 
 		Object[] messageList = {saved.getProductName(),saved.getMinBidPrice()};
 		applicationEventPublisher.publishEvent(
@@ -103,5 +105,12 @@ public class ProductService {
 
 	public List<Product> getAutoCompleteProduct(String productName) {
 		return this.productRepository.findTop10ByProductNameContainsOrderByIdDesc(productName);
+	}
+
+	@Transactional
+	public void deleteProduct(Long productId,Long memberId){
+		Product product = this.productRepository.findById(productId).orElseThrow(() -> new DomainNotFoundException(productId));
+		if (!Objects.equals(memberId, product.getRegisterMemberId())) throw new NoAuthorityException();
+		this.productRepository.delete(product);
 	}
 }

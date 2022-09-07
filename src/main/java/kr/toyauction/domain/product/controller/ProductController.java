@@ -38,12 +38,10 @@ public class ProductController {
 	}
 
 	@DeleteMapping(value = Url.PRODUCT  + "/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public String deleteProduct(@PathVariable final Long productId) {
-		String result = "{\n" +
-				"  \"success\": \"true\"\n" +
-				"}";
-
-		return result;
+	@PreAuthorize("hasRole('USER')")
+	public SuccessResponse<Void> deleteProduct(@PathVariable final Long productId, VerifyMember verifyMember) {
+		productService.deleteProduct(productId,verifyMember.getId());
+		return SuccessResponseHelper.success(null);
 	}
 
 	@PostMapping(value = Url.PRODUCT , produces = MediaType.APPLICATION_JSON_VALUE)
