@@ -3,10 +3,8 @@ package kr.toyauction.domain.product.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.toyauction.domain.image.service.ImageService;
 import kr.toyauction.domain.product.dto.ProductPostRequest;
-import kr.toyauction.domain.product.entity.DeliveryOption;
-import kr.toyauction.domain.product.entity.ExchangeType;
-import kr.toyauction.domain.product.entity.ProductCondition;
-import kr.toyauction.domain.product.entity.PurchaseTime;
+import kr.toyauction.domain.product.entity.*;
+import kr.toyauction.domain.product.service.ProductService;
 import kr.toyauction.global.error.GlobalErrorCode;
 import kr.toyauction.global.property.TestProperty;
 import kr.toyauction.global.property.Url;
@@ -31,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -40,6 +39,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,6 +56,9 @@ class ProductControllerTest {
 	@MockBean
 	ImageService imageService;
 
+	@MockBean
+	ProductService productService;
+
 	@BeforeEach
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
@@ -69,6 +72,7 @@ class ProductControllerTest {
 								.operationPreprocessors()
 								.withRequestDefaults(prettyPrint())
 								.withResponseDefaults(prettyPrint()))
+				.apply(springSecurity())
 				.build();
 	}
 
@@ -263,7 +267,10 @@ class ProductControllerTest {
 
 		Long productId = 5L;
 
+		doNothing().when(productService);
+
 		mockMvc.perform(delete(Url.PRODUCT + "/{productId}", productId)
+						.header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
 						.contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andDo(print())
 				.andExpect(status().isOk())

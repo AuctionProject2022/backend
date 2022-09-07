@@ -68,11 +68,11 @@ public class ProductService {
 		Product saved = productRepository.save(product);
 
 		// PRODUCT_THUMBNAIL
-//		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
-//				.thumbnailImageId(productPostRequest.getThumbnailImageId())
-//				.imageIds(productPostRequest.getImageIds())
-//				.targetId(saved.getId())
-//				.build());
+		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
+				.thumbnailImageId(productPostRequest.getThumbnailImageId())
+				.imageIds(productPostRequest.getImageIds())
+				.targetId(saved.getId())
+				.build());
 
 		Object[] messageList = {saved.getProductName(),saved.getMinBidPrice()};
 		applicationEventPublisher.publishEvent(
