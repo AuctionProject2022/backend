@@ -382,6 +382,9 @@ operation::get-alerts[snippets='http-request,http-response,response-fields']
 
 | AC0007
 | 누군가 내상품 입찰
+
+| AC0008
+| 상품 삭제
 |===
 
 === 알림 확인

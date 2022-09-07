@@ -68,11 +68,11 @@ public class ProductService {
 		Product saved = productRepository.save(product);
 
 		// PRODUCT_THUMBNAIL
-		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
-				.thumbnailImageId(productPostRequest.getThumbnailImageId())
-				.imageIds(productPostRequest.getImageIds())
-				.targetId(saved.getId())
-				.build());
+//		applicationEventPublisher.publishEvent(ImageProductEvent.builder()
+//				.thumbnailImageId(productPostRequest.getThumbnailImageId())
+//				.imageIds(productPostRequest.getImageIds())
+//				.targetId(saved.getId())
+//				.build());
 
 		Object[] messageList = {saved.getProductName(),saved.getMinBidPrice()};
 		applicationEventPublisher.publishEvent(
@@ -111,6 +111,16 @@ public class ProductService {
 	public void deleteProduct(Long productId,Long memberId){
 		Product product = this.productRepository.findById(productId).orElseThrow(() -> new DomainNotFoundException(productId));
 		if (!Objects.equals(memberId, product.getRegisterMemberId())) throw new NoAuthorityException();
+
+		Object[] messageList = {product.getProductName()};
+		applicationEventPublisher.publishEvent(
+				new AlertPublishEvent(product.getRegisterMemberId()
+						,AlertCode.AC0008
+						,AlertCode.AC0008.getMessage()
+						,AlertCode.AC0008.getUrl()+product.getId()
+						,null
+						,messageList));
+
 		this.productRepository.delete(product);
 	}
 }
