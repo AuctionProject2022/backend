@@ -286,4 +286,16 @@ class ProductControllerTest {
 						)
 				));
 	}
+
+	@Test
+	@DisplayName("fail : 상품을 삭제 토큰이 없을 때")
+	void deleteProductNonToken() throws Exception {
+
+		Long productId = 5L;
+
+		ResultActions resultActions = mockMvc.perform(delete(Url.PRODUCT + "/{productId}", productId)
+						.contentType(MediaType.APPLICATION_JSON_VALUE));
+
+		resultActions.andExpect(status().isUnauthorized());
+	}
 }
