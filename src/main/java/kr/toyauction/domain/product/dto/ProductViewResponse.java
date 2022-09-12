@@ -3,6 +3,7 @@ package kr.toyauction.domain.product.dto;
 import kr.toyauction.domain.image.dto.ImageDto;
 import kr.toyauction.domain.image.entity.ImageEntity;
 import kr.toyauction.domain.product.entity.*;
+import kr.toyauction.global.dto.BaseResponse;
 import kr.toyauction.global.dto.EnumCodeValue;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,9 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProductViewResponse {
+public class ProductViewResponse extends BaseResponse {
 
+    private Long productId;
     private String productName;
     private List<ImageDto> images;
     private Integer minBidPrice;
@@ -32,9 +34,11 @@ public class ProductViewResponse {
     private EnumCodeValue productCondition;
     private EnumCodeValue productStatus;
     private String detail;
+    private Long registerMemberId;
     private List<BidPostResponse> bids;
 
     public ProductViewResponse(final Product product) {
+        this.productId = product.getId();
         this.productName = product.getProductName();
         this.minBidPrice = product.getMinBidPrice();
         this.rightPrice = product.getRightPrice();
@@ -47,6 +51,9 @@ public class ProductViewResponse {
         this.productCondition = new EnumCodeValue(product.getProductCondition());
         this.productStatus = new EnumCodeValue(product.getProductStatus());
         this.detail = product.getDetail();
+        this.registerMemberId = product.getRegisterMemberId();
+        this.createDatetime = product.getCreateDatetime();
+        this.updateDatetime = product.getUpdateDatetime();
     }
 
     public void setBids(List<Bid> bids){
