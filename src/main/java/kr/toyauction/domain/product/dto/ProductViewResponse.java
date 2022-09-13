@@ -35,7 +35,7 @@ public class ProductViewResponse extends BaseResponse {
     private EnumCodeValue productStatus;
     private String detail;
     private Long registerMemberId;
-    private List<BidPostResponse> bids;
+    private List<BidGetResponse> bids;
 
     public ProductViewResponse(final Product product) {
         this.productId = product.getId();
@@ -57,9 +57,8 @@ public class ProductViewResponse extends BaseResponse {
     }
 
     public void setBids(List<Bid> bids){
-        this.bids = bids.size() == 0 ? null : bids.stream().map(BidPostResponse::new).collect(Collectors.toList());
+        this.bids = bids.size() == 0 ? null : bids.stream().map(BidGetResponse::new).collect(Collectors.toList());
         this.maxBidPrice = bids.size() == 0 ? null : bids.stream().max(Comparator.comparing(Bid::getBidPrice)).get().getBidPrice();
-
     }
 
     public void setImages(List<ImageEntity> images){
