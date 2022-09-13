@@ -17,14 +17,14 @@ import static kr.toyauction.domain.member.entity.QMember.member;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class MemberQueryRepository extends MemberQuerySupport {
+public class MemberQueryRepository {
 
-    private final JPAQueryFactory jpaQueryFactory;
+	private final JPAQueryFactory jpaQueryFactory;
 
-    public Page<Member> page(@NonNull final Pageable pageable, final MemberGetRequest memberGetRequest) {
-        JPAQuery<Member> jpaQuery = jpaQueryFactory
-                .selectFrom(member)
-                .where(where(memberGetRequest));
-        return PageableExecutionUtils.getPage(jpaQuery.fetch(), pageable, jpaQuery::fetchCount);
-    }
+	public Page<Member> page(@NonNull final Pageable pageable, final MemberGetRequest memberGetRequest) {
+		JPAQuery<Member> jpaQuery = jpaQueryFactory
+				.selectFrom(member)
+				.where(memberGetRequest.where(member));
+		return PageableExecutionUtils.getPage(jpaQuery.fetch(), pageable, jpaQuery::fetchCount);
+	}
 }

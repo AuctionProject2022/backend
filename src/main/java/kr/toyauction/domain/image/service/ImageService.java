@@ -6,7 +6,7 @@ import kr.toyauction.domain.image.entity.ImageEntity;
 import kr.toyauction.domain.image.entity.ImageType;
 import kr.toyauction.domain.image.repository.ImageRepository;
 import kr.toyauction.global.exception.DomainNotFoundException;
-import kr.toyauction.global.util.CommonUtils;
+import kr.toyauction.global.util.CommonUtil;
 import kr.toyauction.infra.aws.client.IntraAwsS3Client;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +29,8 @@ public class ImageService {
 	@Transactional
 	public ImageEntity save(final ImagePostRequest request, final Long memberId) {
 
-		String prefixKey = CommonUtils.generateS3PrefixKey();
-		String randomFilename = CommonUtils.generateRandomFilename(Objects.requireNonNull(request.getImage().getOriginalFilename()));
+		String prefixKey = CommonUtil.generateS3PrefixKey();
+		String randomFilename = CommonUtil.generateRandomFilename(Objects.requireNonNull(request.getImage().getOriginalFilename()));
 
 		ImageEntity imageEntity = ImageEntity.builder()
 				.memberId(memberId) // TODO

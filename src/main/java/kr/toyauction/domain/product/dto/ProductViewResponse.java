@@ -5,9 +5,7 @@ import kr.toyauction.domain.image.entity.ImageEntity;
 import kr.toyauction.domain.product.entity.*;
 import kr.toyauction.global.dto.BaseResponse;
 import kr.toyauction.global.dto.EnumCodeValue;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -16,6 +14,8 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class ProductViewResponse extends BaseResponse {
 

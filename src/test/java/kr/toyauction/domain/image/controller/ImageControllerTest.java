@@ -6,7 +6,7 @@ import kr.toyauction.domain.image.service.ImageService;
 import kr.toyauction.global.error.GlobalErrorCode;
 import kr.toyauction.global.property.TestProperty;
 import kr.toyauction.global.property.Url;
-import kr.toyauction.global.util.CommonUtils;
+import kr.toyauction.global.util.CommonUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -86,7 +86,7 @@ class ImageControllerTest {
 		ImageEntity imageEntity = ImageEntity.builder()
 				.id(1L)
 				.memberId(0L)
-				.path(CommonUtils.generateS3PrefixKey() + CommonUtils.generateRandomFilename(file.getOriginalFilename()))
+				.path(CommonUtil.generateS3PrefixKey() + CommonUtil.generateRandomFilename(file.getOriginalFilename()))
 				.build();
 		Field createDatetime = imageEntity.getClass().getSuperclass().getDeclaredField("createDatetime");
 		createDatetime.setAccessible(true);

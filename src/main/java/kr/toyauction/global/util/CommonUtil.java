@@ -5,7 +5,7 @@ import org.springframework.lang.NonNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class CommonUtils {
+public class CommonUtil {
 
 	/**
 	 * s3 에 업로드 하기 위한 prefix key 생성
