@@ -1,15 +1,20 @@
 package kr.toyauction.domain.product.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.toyauction.domain.image.entity.ImageEntity;
+import kr.toyauction.domain.image.entity.ImageType;
 import kr.toyauction.domain.image.service.ImageService;
+import kr.toyauction.domain.member.entity.Member;
+import kr.toyauction.domain.member.service.MemberService;
 import kr.toyauction.domain.product.dto.ProductPostRequest;
-import kr.toyauction.domain.product.entity.DeliveryOption;
-import kr.toyauction.domain.product.entity.ExchangeType;
-import kr.toyauction.domain.product.entity.ProductCondition;
-import kr.toyauction.domain.product.entity.PurchaseTime;
+import kr.toyauction.domain.product.dto.ProductViewResponse;
+import kr.toyauction.domain.product.entity.*;
+import kr.toyauction.domain.product.service.ProductService;
 import kr.toyauction.global.error.GlobalErrorCode;
+import kr.toyauction.global.exception.DomainNotFoundException;
 import kr.toyauction.global.property.TestProperty;
 import kr.toyauction.global.property.Url;
+import kr.toyauction.global.util.CommonUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,16 +25,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -54,6 +63,9 @@ class ProductControllerTest {
 
 	@MockBean
 	ImageService imageService;
+
+	@MockBean
+	ProductService productService;
 
 	@BeforeEach
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
@@ -207,7 +219,82 @@ class ProductControllerTest {
 	@DisplayName("success : 상품을 조회 합니다.")
 	void getProduct() throws Exception {
 
+		// given
 		Long productId = 5L;
+
+		Product product = Product.builder()
+				.id(1L)
+				.productName("NIKE 에어포스")
+				.minBidPrice(1000)
+				.rightPrice(100000)
+				.startSaleDateTime(LocalDateTime.now())
+				.endSaleDateTime(LocalDateTime.now().plusDays(7))
+				.unitPrice(1000)
+				.purchaseTime(PurchaseTime.SIX_MONTHS)
+				.deliveryOption(DeliveryOption.DELIVERY)
+				.exchangeType(ExchangeType.IMPOSSIBLE)
+				.productCondition(ProductCondition.CLEAN)
+				.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
+				.registerMemberId(1L)
+				.productStatus(ProductStatus.ON_SALE)
+				.build();
+
+		Field createDatetime = product.getClass().getSuperclass().getDeclaredField("createDatetime");
+		createDatetime.setAccessible(true);
+		createDatetime.set(product, LocalDateTime.now());
+
+		Field updateDatetime = product.getClass().getSuperclass().getDeclaredField("updateDatetime");
+		updateDatetime.setAccessible(true);
+		updateDatetime.set(product, LocalDateTime.now());
+
+		ProductViewResponse productViewResponse = new ProductViewResponse(product);
+
+		List<Bid> bids = List.of(
+				Bid.builder()
+						.id(1L)
+						.bidPrice(5000)
+						.build(),
+				Bid.builder()
+						.id(2L)
+						.bidPrice(6000)
+						.build(),
+				Bid.builder()
+						.id(3L)
+						.bidPrice(7000)
+						.build()
+		);
+
+		for(int i=0; i<bids.size(); i++){
+			Field bidDatetime = bids.get(i).getClass().getSuperclass().getDeclaredField("createDatetime");
+			bidDatetime.setAccessible(true);
+			bidDatetime.set(bids.get(i), LocalDateTime.now());
+		}
+
+		productViewResponse.setBids(bids);
+
+		ImageEntity imageEntity = ImageEntity.builder()
+				.id(1L)
+				.path("https://cdn.toyauction.kr/images/2022-8-30/ccbe55a9-2f97-46f0-8365-4c49874acfda.png")
+				.type(ImageType.PRODUCT_THUMBNAIL)
+				.build();
+
+		List<ImageEntity> image = List.of(
+				ImageEntity.builder()
+						.id(1L)
+						.path("https://cdn.toyauction.kr/images/2022-8-30/ccbe55a9-2f97-46f0-8365-4c49874acfda.png")
+						.type(ImageType.PRODUCT_THUMBNAIL)
+						.build(),
+				ImageEntity.builder()
+						.id(2L)
+						.path("https://cdn.toyauction.kr/images/2022-8-30/ccbe55a9-2f97-46f0-8365-4c49874acfda.png")
+						.type(ImageType.PRODUCT)
+						.build());
+
+		productViewResponse.setImages(image);
+
+		given(productService.getProduct(any())).willReturn(productViewResponse);
+
+
 
 		mockMvc.perform(get(Url.PRODUCT + "/{productId}", productId)
 						.contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -244,10 +331,10 @@ class ProductControllerTest {
 								fieldWithPath("data.bids[].bidId").description("입찰 번호"),
 								fieldWithPath("data.bids[].bidSeq").description("입찰 순서"),
 								fieldWithPath("data.bids[].bidPrice").description("입찰 금액"),
-								fieldWithPath("data.bids[].createDatetime").description("입찰 생성 시간"),
+								fieldWithPath("data.bids[].bidDatetime").description("입찰 시간"),
 								fieldWithPath("data.registerMemberId").description("등록자 회원번호"),
 								fieldWithPath("data.productStatus.code").description("판매 상태 코드"),
-								fieldWithPath("data.productStatus.name").description("판매 상태 이름"),
+								fieldWithPath("data.productStatus.value").description("판매 상태 이름"),
 								fieldWithPath("data.createDatetime").description("등록일"),
 								fieldWithPath("data.updateDatetime").description("수정일")
 						)
