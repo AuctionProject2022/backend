@@ -11,7 +11,6 @@ import java.awt.*;
 @Setter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class ImageDto {
     private Long imageId;
     private String imageUrl;
@@ -21,5 +20,12 @@ public class ImageDto {
         this.imageId = image.getId();
         this.imageUrl = image.getPath();
         this.imageType = image.getType();
+    }
+
+    @QueryProjection
+    public ImageDto(Long imageId, String imageUrl, ImageType imageType){
+        this.imageId = imageId;
+        this.imageUrl = imageUrl;
+        this.imageType = imageType;
     }
 }
