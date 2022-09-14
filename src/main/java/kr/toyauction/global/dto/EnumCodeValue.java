@@ -1,11 +1,13 @@
 package kr.toyauction.global.dto;
 
 import kr.toyauction.global.entity.CodeEnum;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EnumCodeValue {
     private String code;
     private String value;

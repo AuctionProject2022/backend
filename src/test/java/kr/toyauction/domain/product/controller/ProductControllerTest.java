@@ -1,10 +1,15 @@
 package kr.toyauction.domain.product.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.toyauction.domain.image.dto.ImageDto;
+import kr.toyauction.domain.image.entity.ImageType;
 import kr.toyauction.domain.image.service.ImageService;
+import kr.toyauction.domain.product.dto.BidPostResponse;
 import kr.toyauction.domain.product.dto.ProductPostRequest;
+import kr.toyauction.domain.product.dto.ProductViewResponse;
 import kr.toyauction.domain.product.entity.*;
 import kr.toyauction.domain.product.service.ProductService;
+import kr.toyauction.global.dto.EnumCodeValue;
 import kr.toyauction.global.error.GlobalErrorCode;
 import kr.toyauction.global.property.TestProperty;
 import kr.toyauction.global.property.Url;
@@ -14,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
@@ -24,8 +30,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -40,7 +48,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, MockitoExtension.class})
@@ -56,6 +65,9 @@ class ProductControllerTest {
 
 	@MockBean
 	ProductService productService;
+
+	@Value("${property.intra.aws-s3-host}")
+	private String imageHost;
 
 	@BeforeEach
 	public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
@@ -79,7 +91,7 @@ class ProductControllerTest {
 	void postProduct() throws Exception {
 
 		Long thumbnailImageId = 66L;
-		List<Long> imageIds = List.of(66L,67L);
+		List<Long> imageIds = List.of(66L, 67L);
 
 		ProductPostRequest request = ProductPostRequest.builder()
 				.productName("NIKE 에어포스")
@@ -97,6 +109,24 @@ class ProductControllerTest {
 				.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
 				.build();
 		doNothing().when(imageService).updateProductTarget(any(), any(), any());
+		given(productService.save(any(), any())).willReturn(
+				Product.builder()
+						.id(1249L)
+						.productName(request.getProductName())
+						.minBidPrice(request.getMinBidPrice())
+						.rightPrice(request.getRightPrice())
+						.startSaleDateTime(request.getStartSaleDateTime())
+						.endSaleDateTime(request.getEndSaleDateTime())
+						.unitPrice(request.getUnitPrice())
+						.purchaseTime(request.getPurchaseTime())
+						.deliveryOption(request.getDeliveryOption())
+						.exchangeType(request.getExchangeType())
+						.productCondition(request.getProductCondition())
+						.detail(request.getDetail())
+						.registerMemberId(0L)
+						.productStatus(ProductStatus.ON_SALE)
+						.build()
+		);
 
 		mockMvc.perform(post(Url.PRODUCT)
 						.header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
@@ -140,7 +170,7 @@ class ProductControllerTest {
 		//given
 		ProductPostRequest request = ProductPostRequest.builder()
 				.productName(null)
-				.imageIds(List.of(66L,67L))
+				.imageIds(List.of(66L, 67L))
 				.thumbnailImageId(66L)
 				.minBidPrice(1000)
 				.rightPrice(100000)
@@ -175,7 +205,7 @@ class ProductControllerTest {
 		//given
 		ProductPostRequest request = ProductPostRequest.builder()
 				.productName("나이키")
-				.imageIds(List.of(66L,67L))
+				.imageIds(List.of(66L, 67L))
 				.thumbnailImageId(null)
 				.minBidPrice(1000)
 				.rightPrice(100000)
@@ -204,13 +234,42 @@ class ProductControllerTest {
 	}
 
 
-
 	@Test
 	@DisplayName("success : 상품을 조회 합니다.")
 	void getProduct() throws Exception {
 
-		Long productId = 5L;
+		//given
 
+		Long productId = 5L;
+		ImageDto thumbnail = ImageDto.builder().imageId(14L).imageType(ImageType.PRODUCT_THUMBNAIL).imageUrl(imageHost + UUID.randomUUID() + ".png").build();
+		ImageDto image = ImageDto.builder().imageId(99L).imageType(ImageType.PRODUCT).imageUrl(imageHost + UUID.randomUUID() + ".png").build();
+
+		BidPostResponse bids1 = BidPostResponse.builder().bidId(196L).bidPrice(1500).createDatetime(LocalDateTime.now()).build();
+		BidPostResponse bids2 = BidPostResponse.builder().bidId(195L).bidPrice(1200).createDatetime(LocalDateTime.now().minusDays(1)).build();
+
+
+		given(productService.getProduct(any())).willReturn(
+				ProductViewResponse.builder()
+						.images(List.of(thumbnail, image))
+						.productName("NIKE 에어포스")
+						.minBidPrice(1000)
+						.rightPrice(100000)
+						.startSaleDateTime(LocalDateTime.now())
+						.endSaleDateTime(LocalDateTime.now().plusDays(7))
+						.unitPrice(1000)
+						.purchaseTime(EnumCodeValue.builder().code(PurchaseTime.SIX_MONTHS.name()).value(PurchaseTime.SIX_MONTHS.getValue()).build())
+						.deliveryOption(EnumCodeValue.builder().code(DeliveryOption.DELIVERY.name()).value(DeliveryOption.DELIVERY.getValue()).build())
+						.exchangeType(EnumCodeValue.builder().code(ExchangeType.IMPOSSIBLE.name()).value(ExchangeType.IMPOSSIBLE.getValue()).build())
+						.productCondition(EnumCodeValue.builder().code(ProductCondition.CLEAN.name()).value(ProductCondition.CLEAN.getValue()).build())
+						.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
+						.productId(productId)
+						.registerMemberId(0L)
+						.productStatus(EnumCodeValue.builder().code(ProductStatus.ON_SALE.name()).value(ProductStatus.ON_SALE.getValue()).build())
+						.bids(List.of(bids1, bids2))
+						.build()
+		);
+
+		// when then
 		mockMvc.perform(get(Url.PRODUCT + "/{productId}", productId)
 						.contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andDo(print())
@@ -244,12 +303,11 @@ class ProductControllerTest {
 								fieldWithPath("data.productCondition.value").description("상품 상태 내용"),
 								fieldWithPath("data.detail").description("상품 내용"),
 								fieldWithPath("data.bids[].bidId").description("입찰 번호"),
-								fieldWithPath("data.bids[].bidSeq").description("입찰 순서"),
 								fieldWithPath("data.bids[].bidPrice").description("입찰 금액"),
 								fieldWithPath("data.bids[].createDatetime").description("입찰 생성 시간"),
 								fieldWithPath("data.registerMemberId").description("등록자 회원번호"),
 								fieldWithPath("data.productStatus.code").description("판매 상태 코드"),
-								fieldWithPath("data.productStatus.name").description("판매 상태 이름"),
+								fieldWithPath("data.productStatus.value").description("판매 상태 이름"),
 								fieldWithPath("data.createDatetime").description("등록일"),
 								fieldWithPath("data.updateDatetime").description("수정일")
 						)
@@ -289,7 +347,7 @@ class ProductControllerTest {
 		Long productId = 5L;
 
 		ResultActions resultActions = mockMvc.perform(delete(Url.PRODUCT + "/{productId}", productId)
-						.contentType(MediaType.APPLICATION_JSON_VALUE));
+				.contentType(MediaType.APPLICATION_JSON_VALUE));
 
 		resultActions.andExpect(status().isUnauthorized());
 	}
