@@ -307,6 +307,27 @@ productId 로 상품을 조회할 수 있다.
 
 operation::get-product[snippets='path-parameters,http-request,http-response,response-fields']
 
+=== 상품 목록
+
+상품목록을 조회할 수 있다.
+|===
+| parameter | Description | default
+
+| page
+| 페이지
+| 0
+
+| size
+| 사이즈
+| 20
+
+| sort
+| 정렬(신규등록:createDatetime,desc)
+|
+|===
+
+operation::get-products[snippets='http-request,http-response,response-fields']
+
 === 상품 삭제
 
 productId 로 상품을 삭제할 수 있다.
