@@ -1,15 +1,19 @@
 package kr.toyauction.domain.product.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.toyauction.domain.alert.dto.AlertGetResponse;
+import kr.toyauction.domain.alert.entity.Alert;
 import kr.toyauction.domain.image.dto.ImageDto;
 import kr.toyauction.domain.image.entity.ImageType;
 import kr.toyauction.domain.image.service.ImageService;
 import kr.toyauction.domain.product.dto.BidPostResponse;
+import kr.toyauction.domain.product.dto.ProductGetResponse;
 import kr.toyauction.domain.product.dto.ProductPostRequest;
 import kr.toyauction.domain.product.dto.ProductViewResponse;
 import kr.toyauction.domain.product.entity.*;
 import kr.toyauction.domain.product.service.ProductService;
 import kr.toyauction.global.dto.EnumCodeValue;
+import kr.toyauction.global.entity.AlertCode;
 import kr.toyauction.global.error.GlobalErrorCode;
 import kr.toyauction.global.property.TestProperty;
 import kr.toyauction.global.property.Url;
@@ -22,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -31,7 +37,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,8 +56,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, MockitoExtension.class})
@@ -350,5 +357,58 @@ class ProductControllerTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE));
 
 		resultActions.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	@DisplayName("success : 상품 목록 조회")
+	void getProducts() throws Exception {
+
+		//give
+		int page = 0, size = 20;
+
+		ProductGetResponse productGetResponse = ProductGetResponse.builder()
+				.productId(1L)
+				.thumbnailImage(ImageDto.builder().imageId(14L).imageType(ImageType.PRODUCT_THUMBNAIL).imageUrl(imageHost + UUID.randomUUID() + ".png").build())
+				.productName("NIKE 에어포스")
+				.maxBidPrice(8000)
+				.rightPrice(100000)
+				.minBidPrice(1000)
+				.unitPrice(1000)
+				.endSaleDateTime(LocalDateTime.now().plusDays(7))
+				.build();
+
+		List<ProductGetResponse> productList = new ArrayList<>();
+		productList.add(productGetResponse);
+		Page<ProductGetResponse> responses = new PageImpl<>(productList);
+
+		given(productService.pageProduct(any(),any())).willReturn(responses);
+
+		//when
+		ResultActions resultActions = mockMvc.perform(get(Url.PRODUCT+"?page={page}&size={size}&sort=createDatetime,desc",page,size)
+						//.header(HttpHeaders.AUTHORIZATION, "Bearer " + TestProperty.TEST_ACCESS_TOKEN)
+						.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andDo(document("get-products",
+						responseHeaders(
+								headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type")
+						),
+						relaxedResponseFields(
+								fieldWithPath("data.content[].productId").description("상품 고유번호"),
+								fieldWithPath("data.content[].thumbnailImage.imageId").description("상품 이미지 파일번호"),
+								fieldWithPath("data.content[].thumbnailImage.imageUrl").description("상품 이미지 경로"),
+								fieldWithPath("data.content[].thumbnailImage.imageType").description("상품 이미지 파일타입"),
+								fieldWithPath("data.content[].productName").description("상품 이름"),
+								fieldWithPath("data.content[].maxBidPrice").description("현재 입찰가"),
+								fieldWithPath("data.content[].rightPrice").description("즉시 입찰가"),
+								fieldWithPath("data.content[].minBidPrice").description("최초 입찰 시작가"),
+								fieldWithPath("data.content[].unitPrice").description("입찰 단위"),
+								fieldWithPath("data.content[].endSaleDateTime").description("판매 종료 기간")
+						)
+				));
+
+		// then
+		resultActions.andExpect(status().isOk());
+		resultActions.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
 	}
 }
