@@ -252,27 +252,34 @@ class ProductControllerTest {
 		BidPostResponse bids1 = BidPostResponse.builder().bidId(196L).bidPrice(1500).createDatetime(LocalDateTime.now()).build();
 		BidPostResponse bids2 = BidPostResponse.builder().bidId(195L).bidPrice(1200).createDatetime(LocalDateTime.now().minusDays(1)).build();
 
+		ProductViewResponse response = ProductViewResponse.builder()
+				.images(List.of(thumbnail, image))
+				.productName("NIKE 에어포스")
+				.maxBidPrice(1500)
+				.minBidPrice(1000)
+				.rightPrice(100000)
+				.startSaleDateTime(LocalDateTime.now())
+				.endSaleDateTime(LocalDateTime.now().plusDays(7))
+				.unitPrice(1000)
+				.purchaseTime(EnumCodeValue.builder().code(PurchaseTime.SIX_MONTHS.name()).value(PurchaseTime.SIX_MONTHS.getValue()).build())
+				.deliveryOption(EnumCodeValue.builder().code(DeliveryOption.DELIVERY.name()).value(DeliveryOption.DELIVERY.getValue()).build())
+				.exchangeType(EnumCodeValue.builder().code(ExchangeType.IMPOSSIBLE.name()).value(ExchangeType.IMPOSSIBLE.getValue()).build())
+				.productCondition(EnumCodeValue.builder().code(ProductCondition.CLEAN.name()).value(ProductCondition.CLEAN.getValue()).build())
+				.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
+				.productId(productId)
+				.registerMemberId(0L)
+				.productStatus(EnumCodeValue.builder().code(ProductStatus.ON_SALE.name()).value(ProductStatus.ON_SALE.getValue()).build())
+				.bids(List.of(bids1, bids2))
+				.build();
 
-		given(productService.getProduct(any())).willReturn(
-				ProductViewResponse.builder()
-						.images(List.of(thumbnail, image))
-						.productName("NIKE 에어포스")
-						.minBidPrice(1000)
-						.rightPrice(100000)
-						.startSaleDateTime(LocalDateTime.now())
-						.endSaleDateTime(LocalDateTime.now().plusDays(7))
-						.unitPrice(1000)
-						.purchaseTime(EnumCodeValue.builder().code(PurchaseTime.SIX_MONTHS.name()).value(PurchaseTime.SIX_MONTHS.getValue()).build())
-						.deliveryOption(EnumCodeValue.builder().code(DeliveryOption.DELIVERY.name()).value(DeliveryOption.DELIVERY.getValue()).build())
-						.exchangeType(EnumCodeValue.builder().code(ExchangeType.IMPOSSIBLE.name()).value(ExchangeType.IMPOSSIBLE.getValue()).build())
-						.productCondition(EnumCodeValue.builder().code(ProductCondition.CLEAN.name()).value(ProductCondition.CLEAN.getValue()).build())
-						.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
-						.productId(productId)
-						.registerMemberId(0L)
-						.productStatus(EnumCodeValue.builder().code(ProductStatus.ON_SALE.name()).value(ProductStatus.ON_SALE.getValue()).build())
-						.bids(List.of(bids1, bids2))
-						.build()
-		);
+		Field createDatetime = response.getClass().getSuperclass().getDeclaredField("createDatetime");
+		createDatetime.setAccessible(true);
+		createDatetime.set(response, LocalDateTime.now());
+		Field updateDateTime = response.getClass().getSuperclass().getDeclaredField("updateDatetime");
+		updateDateTime.setAccessible(true);
+		updateDateTime.set(response, LocalDateTime.now());
+
+		given(productService.getProduct(any())).willReturn(response);
 
 		// when then
 		mockMvc.perform(get(Url.PRODUCT + "/{productId}", productId)
@@ -292,9 +299,9 @@ class ProductControllerTest {
 								fieldWithPath("data.images[].imageType").description("상품 이미지 파일타입"),
 								fieldWithPath("data.images[].imageUrl").description("상품 이미지 경로"),
 								fieldWithPath("data.productName").description("상품 이름"),
-								fieldWithPath("data.maxBidPrice").description("즉시 구매가"),
+								fieldWithPath("data.maxBidPrice").description("현재 입찰가"),
 								fieldWithPath("data.minBidPrice").description("최초 입찰 시작가"),
-								fieldWithPath("data.rightPrice").description("현재 입찰가"),
+								fieldWithPath("data.rightPrice").description("즉시 구매가"),
 								fieldWithPath("data.startSaleDateTime").description("판매 시작 기간"),
 								fieldWithPath("data.endSaleDateTime").description("판매 종료 기간"),
 								fieldWithPath("data.unitPrice").description("입찰 단위"),
@@ -418,52 +425,52 @@ class ProductControllerTest {
 		String productName = "NIKE";
 
 		List<Product> productList = List.of(
-											Product.builder()
-													.id(1L)
-													.productName("NIKE 에어포스")
-													.minBidPrice(1000)
-													.rightPrice(100000)
-													.startSaleDateTime(LocalDateTime.now())
-													.endSaleDateTime(LocalDateTime.now().plusDays(7))
-													.unitPrice(1000)
-													.purchaseTime(PurchaseTime.SIX_MONTHS)
-													.deliveryOption(DeliveryOption.DELIVERY)
-													.exchangeType(ExchangeType.IMPOSSIBLE)
-													.productCondition(ProductCondition.CLEAN)
-													.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
-													.registerMemberId(1L)
-													.build(),
-											Product.builder()
-													.id(2L)
-													.productName("DUNK ROW NIKE")
-													.minBidPrice(1000)
-													.rightPrice(100000)
-													.startSaleDateTime(LocalDateTime.now())
-													.endSaleDateTime(LocalDateTime.now().plusDays(7))
-													.unitPrice(1000)
-													.purchaseTime(PurchaseTime.SIX_MONTHS)
-													.deliveryOption(DeliveryOption.DELIVERY)
-													.exchangeType(ExchangeType.IMPOSSIBLE)
-													.productCondition(ProductCondition.CLEAN)
-													.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
-													.registerMemberId(2L)
-													.build()
-										);
+				Product.builder()
+						.id(1L)
+						.productName("NIKE 에어포스")
+						.minBidPrice(1000)
+						.rightPrice(100000)
+						.startSaleDateTime(LocalDateTime.now())
+						.endSaleDateTime(LocalDateTime.now().plusDays(7))
+						.unitPrice(1000)
+						.purchaseTime(PurchaseTime.SIX_MONTHS)
+						.deliveryOption(DeliveryOption.DELIVERY)
+						.exchangeType(ExchangeType.IMPOSSIBLE)
+						.productCondition(ProductCondition.CLEAN)
+						.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
+						.registerMemberId(1L)
+						.build(),
+				Product.builder()
+						.id(2L)
+						.productName("DUNK ROW NIKE")
+						.minBidPrice(1000)
+						.rightPrice(100000)
+						.startSaleDateTime(LocalDateTime.now())
+						.endSaleDateTime(LocalDateTime.now().plusDays(7))
+						.unitPrice(1000)
+						.purchaseTime(PurchaseTime.SIX_MONTHS)
+						.deliveryOption(DeliveryOption.DELIVERY)
+						.exchangeType(ExchangeType.IMPOSSIBLE)
+						.productCondition(ProductCondition.CLEAN)
+						.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
+						.registerMemberId(2L)
+						.build()
+		);
 		given(productService.getAutoCompleteProduct(any())).willReturn(productList);
 
 		ResultActions resultActions = mockMvc.perform(get(Url.PRODUCT+"/autocomplete?productName={productName}",productName)
 						.contentType(MediaType.APPLICATION_JSON_VALUE))
-						.andDo(print())
-						.andExpect(status().isOk())
-						.andDo(document("get-product-autocomplete",
-								responseHeaders(
-										headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type")
-								),
-								relaxedResponseFields(
-										fieldWithPath("data[].productId").description("상품 고유번호"),
-										fieldWithPath("data[].productName").description("상품 이름")
-								)
-						));
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andDo(document("get-product-autocomplete",
+						responseHeaders(
+								headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type")
+						),
+						relaxedResponseFields(
+								fieldWithPath("data[].productId").description("상품 고유번호"),
+								fieldWithPath("data[].productName").description("상품 이름")
+						)
+				));
 
 		// then
 		resultActions.andExpect(status().isOk());
