@@ -6,10 +6,7 @@ import kr.toyauction.domain.alert.entity.Alert;
 import kr.toyauction.domain.image.dto.ImageDto;
 import kr.toyauction.domain.image.entity.ImageType;
 import kr.toyauction.domain.image.service.ImageService;
-import kr.toyauction.domain.product.dto.BidPostResponse;
-import kr.toyauction.domain.product.dto.ProductGetResponse;
-import kr.toyauction.domain.product.dto.ProductPostRequest;
-import kr.toyauction.domain.product.dto.ProductViewResponse;
+import kr.toyauction.domain.product.dto.*;
 import kr.toyauction.domain.product.entity.*;
 import kr.toyauction.domain.product.service.ProductService;
 import kr.toyauction.global.dto.EnumCodeValue;
@@ -42,6 +39,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -406,6 +404,66 @@ class ProductControllerTest {
 								fieldWithPath("data.content[].endSaleDateTime").description("판매 종료 기간")
 						)
 				));
+
+		// then
+		resultActions.andExpect(status().isOk());
+		resultActions.andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+	}
+
+	@Test
+	@DisplayName("success : 상품 검색 자동완성")
+	void getAutoComplete() throws Exception {
+
+		//give
+		String productName = "NIKE";
+
+		List<Product> productList = List.of(
+											Product.builder()
+													.id(1L)
+													.productName("NIKE 에어포스")
+													.minBidPrice(1000)
+													.rightPrice(100000)
+													.startSaleDateTime(LocalDateTime.now())
+													.endSaleDateTime(LocalDateTime.now().plusDays(7))
+													.unitPrice(1000)
+													.purchaseTime(PurchaseTime.SIX_MONTHS)
+													.deliveryOption(DeliveryOption.DELIVERY)
+													.exchangeType(ExchangeType.IMPOSSIBLE)
+													.productCondition(ProductCondition.CLEAN)
+													.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
+													.registerMemberId(1L)
+													.build(),
+											Product.builder()
+													.id(2L)
+													.productName("DUNK ROW NIKE")
+													.minBidPrice(1000)
+													.rightPrice(100000)
+													.startSaleDateTime(LocalDateTime.now())
+													.endSaleDateTime(LocalDateTime.now().plusDays(7))
+													.unitPrice(1000)
+													.purchaseTime(PurchaseTime.SIX_MONTHS)
+													.deliveryOption(DeliveryOption.DELIVERY)
+													.exchangeType(ExchangeType.IMPOSSIBLE)
+													.productCondition(ProductCondition.CLEAN)
+													.detail("구매한지 한달밖에 안된 최고의 상품입니다.")
+													.registerMemberId(2L)
+													.build()
+										);
+		given(productService.getAutoCompleteProduct(any())).willReturn(productList);
+
+		ResultActions resultActions = mockMvc.perform(get(Url.PRODUCT+"/autocomplete?productName={productName}",productName)
+						.contentType(MediaType.APPLICATION_JSON_VALUE))
+						.andDo(print())
+						.andExpect(status().isOk())
+						.andDo(document("get-product-autocomplete",
+								responseHeaders(
+										headerWithName(HttpHeaders.CONTENT_TYPE).description("Content Type")
+								),
+								relaxedResponseFields(
+										fieldWithPath("data[].productId").description("상품 고유번호"),
+										fieldWithPath("data[].productName").description("상품 이름")
+								)
+						));
 
 		// then
 		resultActions.andExpect(status().isOk());

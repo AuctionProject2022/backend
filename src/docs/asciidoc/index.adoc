@@ -334,6 +334,12 @@ productId 로 상품을 삭제할 수 있다.
 
 operation::delete-product[snippets='path-parameters,http-request,http-response,response-fields']
 
+=== 상품명 검색 자동완성
+
+productName를 입력하여 상품명이 자동완성된다.
+
+operation::get-product-autocomplete[snippets='http-request,http-response,response-fields']
+
 == 파일
 
 파일 타입
